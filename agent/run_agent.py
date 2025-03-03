@@ -2,13 +2,12 @@
 from langchain_core.messages import SystemMessage, HumanMessage, BaseMessage
 from langgraph.graph import StateGraph
 import uuid
-import os
 from datetime import datetime
-import json
 from pydantic import BaseModel, Field
 from workflow import build_graph
 from langgraph.types import Command
 from langgraph.types import StateSnapshot
+
 
 def execute_ai_interview_agent(workflow, inputs: dict):
     config = {
@@ -39,13 +38,21 @@ def execute_ai_interview_agent(workflow, inputs: dict):
 
 if __name__ == "__main__":
     workflow = build_graph()
+    # inputs = {
+    #     "start_time": datetime.now(),
+    #     "messages": [],
+    #     "job_title": "Java Engineer",
+    #     "knowledge_points": "Java, SpringBoot, JVM, CompletableFuture, Design Pattern, SpringBoot ControllerAdvice",
+    #     "interview_time": 3,
+    #     "language": "Chinese"
+    # }
+
     inputs = {
         "start_time": datetime.now(),
         "messages": [],
-        "job_title": "Java API Engineer",
-        "knowledge_points": "Java, SpringBoot, JVM, CompletableFuture, Design Pattern, SpringBoot ControllerAdvice",
+        "job_title": "React Web Developer",
+        "knowledge_points": "React, JavaScript, TypeScript, React Router, React State Management, Redux, React Hooks, React Context API, React Performance Optimization",
         "interview_time": 3,
         "language": "Chinese"
     }
-
     execute_ai_interview_agent(workflow, inputs)
