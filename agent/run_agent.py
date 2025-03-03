@@ -10,19 +10,10 @@ from workflow import build_graph
 from langgraph.types import Command
 from langgraph.types import StateSnapshot
 
-def execute_ai_interview_agent(workflow):
+def execute_ai_interview_agent(workflow, inputs: dict):
     config = {
         "configurable": {"thread_id": uuid.uuid4(), "user_id": "Interviewer"},
         "model_name": "claude-3-5-sonnet",
-    }
-
-    inputs = {
-        "start_time": datetime.now(),
-        "messages": [],
-        "job_title": "Java API Engineer",
-        "knowledge_points": "Java, SpringBoot, JVM, Multi-thread",
-        "interview_time": 3,
-        "language": "Chinese"
     }
 
     events = workflow.stream(inputs, config=config, stream_mode="values")
@@ -48,4 +39,13 @@ def execute_ai_interview_agent(workflow):
 
 if __name__ == "__main__":
     workflow = build_graph()
-    execute_ai_interview_agent(workflow)
+    inputs = {
+        "start_time": datetime.now(),
+        "messages": [],
+        "job_title": "Java API Engineer",
+        "knowledge_points": "Java, SpringBoot, JVM, CompletableFuture, Design Pattern, SpringBoot ControllerAdvice",
+        "interview_time": 3,
+        "language": "Chinese"
+    }
+
+    execute_ai_interview_agent(workflow, inputs)

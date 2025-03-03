@@ -147,7 +147,6 @@ def build_graph():
     workflow.add_node("send_next_question", send_next_question)
     workflow.add_node("summarize_interview", summarize_interview)
 
-
     # Set the entrypoint as `agent`
     # This means that this node is the first one called
     workflow.set_entry_point("kickoff_interview")
@@ -180,6 +179,7 @@ def build_graph():
                              interrupt_before=["analyze_answer"])
     
     return graph
+
 
 if __name__ == "__main__":
     graph = build_graph()
