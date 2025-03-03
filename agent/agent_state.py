@@ -5,7 +5,7 @@ from typing import (
 )
 from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
-from agent.interview_response import AnalyzeAnswerResponse, Question
+from agent.interview_response import QAResult
 from enum import Enum
 from datetime import datetime
 
@@ -27,7 +27,7 @@ class AgentState(TypedDict):
     language: Language = Language.ENGLISH
 
     # current user answer and feedback
-    question: Question | None = None
+    question: str | None = None
     user_answer: str | None = None
-    analyze_answer_response: AnalyzeAnswerResponse | None = None
+    analyze_answer_response: QAResult | None = None
     

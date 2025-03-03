@@ -11,10 +11,11 @@ from agent.agent_state import AgentState
 from pydantic import BaseModel, Field   
 from utils.prompt_utils import load_prompt
 from utils.llm import get_model
-from agent.interview_response import Question, AnalyzeAnswerResponse
+from agent.interview_response import Question, AnalyzeAnswerResponse, QAResult
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
-from datetime import datetime
+from datetime import datetime   
+from agent.qa_analyzer import analyze_question_answer   
 
 def kickoff_interview(state: AgentState,     
                       config: RunnableConfig):
@@ -28,17 +29,15 @@ def kickoff_interview(state: AgentState,
                                                               language=state["language"]))
 
     model_name: str = config["configurable"].get("model_name", "gpt-4o")
-    model: ChatOpenAI = get_model(model=model_name).with_structured_output(Question, strict=True, method="json_schema")
+    model: ChatOpenAI = get_model(model=model_name)
     
     print("System :> " + human_prompt.content)
-    response: Question = model.invoke([human_prompt])
-
-    ai_response: AIMessage = AIMessage(content=response.model_dump_json(indent=2))
-    print("AI :> " + response.model_dump_json(indent=2))
+    response = model.invoke([human_prompt])
+    # print("AI :> " + response.content)
 
     return {
-        "messages": [human_prompt, response.question],
-        "question": response
+        "messages": [human_prompt, response],
+        "question": response.content
     }
 
 
@@ -48,21 +47,16 @@ def analyze_answer(state: AgentState,
     print("========== Analyze Answer ==========")
 
     elapsed_time = (datetime.now() - state["start_time"]).total_seconds() / 60
-
     answer: str = state["user_answer"]
-    user_message = HumanMessage(content = answer + """\n\ntotal {elapsed_time} minutes passed
-                                """)
+    user_message = answer + f"""\n\ntotal {elapsed_time} minutes passed"""
 
     model_name = config["configurable"].get("model_name", "gpt-4o")
-    model = get_model(model=model_name).with_structured_output(AnalyzeAnswerResponse, strict=True, method="json_schema")
-    
-    response: AnalyzeAnswerResponse = model.invoke(state["messages"] + [user_message])
-    print("AI Analysis :> " + response.model_dump_json(indent=2))
+    response: QAResult = analyze_question_answer(user_message, state["question"], state["language"])
 
     # append user answer into chat history
     # and get feedback from AI
     return {
-        "messages": [user_message], 
+        "messages": [HumanMessage(content=user_message)], 
         "analyze_answer_response": response
     }    
 
@@ -74,7 +68,8 @@ def repeat_question(state: AgentState,
 
     # append the feedback to the messages
     # and then send it back to user (and clean previous answer and its analysis)
-    ai_response: AIMessage = AIMessage(content=state["analyze_answer_response"].feedback)   
+    qa_result: QAResult = state["analyze_answer_response"]
+    ai_response: AIMessage = AIMessage(content=qa_result.answer.feedback)   
     return {
         "messages": [ai_response],
         "user_answer": None,
@@ -87,15 +82,21 @@ def send_next_question(state: AgentState,
 
     print("========== Send Next Question ==========")
 
-    analyze_answer_response: AnalyzeAnswerResponse = state["analyze_answer_response"]
-    next_question: Question = analyze_answer_response.next_question
+    model_name: str = config["configurable"].get("model_name", "gpt-4o")
+    model: ChatOpenAI = get_model(model=model_name)
+    
+    response = model.invoke(state["messages"])
+    # print("AI :> " + response.content)
+
+    qa_result: QAResult = state["analyze_answer_response"]
+    ai_analysis = "User answer analysis:\n\n" + qa_result.answer.model_dump_json(indent=2) + "\n\n"
+    ai_message = AIMessage(content=ai_analysis + "Next question:\n\n" + response.content)
 
     # append the next question to the messages
     # and send it back to user (clean previous answer and its analysis)
-    ai_message = AIMessage(content=next_question.question)
     return {
         "messages": [ai_message],
-        "question": next_question,
+        "question": response.content,
         "user_answer": None,
         "analyze_answer_response": None,
     }
@@ -107,26 +108,34 @@ def summarize_interview(state: AgentState,
     pass
 
 
+def is_over_condition(state: AgentState,
+                      config: RunnableConfig):
+    print("========== Is Over Condition ==========")
+    question: str = state["question"]
+    if "面试结束" in question or "Interview Over" in question:
+        print(f"{question} is over condition")
+        return "summarize_interview"
+    else:
+        return "analyze_answer"
+
+
 def check_analyze_answer_response_condition(state: AgentState,
                                             config: RunnableConfig):
     
     print("========== Check Analyze Answer Response Condition ==========")
 
-    analyze_answer_response: AnalyzeAnswerResponse = state["analyze_answer_response"]
+    qa_result: QAResult = state["analyze_answer_response"]
 
-    if analyze_answer_response is None:
+    if qa_result is None:
         return "repeat_question"
 
-    if analyze_answer_response.is_interview_over:
+    if qa_result.is_interview_over:
         return "summarize_interview"
 
-    if not analyze_answer_response.is_answer:
+    if qa_result.answer and not qa_result.answer.is_valid:
         return "repeat_question"
 
-    if analyze_answer_response.next_question:
-        return "send_next_question"
-
-    return "repeat_question"
+    return "send_next_question"
 
 def build_graph():
 
@@ -156,7 +165,14 @@ def build_graph():
     )
 
     workflow.add_edge("repeat_question", "analyze_answer")
-    workflow.add_edge("send_next_question", "analyze_answer")
+    workflow.add_conditional_edges(
+        "send_next_question",
+        is_over_condition,
+        {
+            "summarize_interview": "summarize_interview",
+            "analyze_answer": "analyze_answer"
+        },
+    )
     workflow.add_edge("summarize_interview", END)
 
     memory = MemorySaver()

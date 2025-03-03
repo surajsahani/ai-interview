@@ -8,12 +8,14 @@ class QuestionType(str, Enum):
     SHORT_ANSWER = "Short Answer"
     TRUE_FALSE = "True False"
 
+
 class Question(BaseModel):
     question: str = Field(description="The question of the interview, including choices")
     question_number: int = Field(description="The number of the question, start from 1")
     question_type: QuestionType = Field(description="The type of the question")
     knowledge_point: str = Field(description="The knowledge point of the question")
     answer: str = Field(description="The answer of the question")
+
 
 class AnalyzeAnswerResponse(BaseModel):
   
@@ -27,12 +29,14 @@ class AnalyzeAnswerResponse(BaseModel):
 
     next_question: Question | None = Field(description="Generate a new question for the interview")
 
+
 class Answer(BaseModel):
     is_valid: bool = Field(description="Whether the answer is a valid response")
     feedback: str = Field(description="Friendly feedback of the answer")
     is_correct: bool = Field(description="Whether the answer is correct")
     analysis: str = Field(description="The analysis of the answer")
     score: int = Field(description="The score of the answer (0-5)")
+
 
 class QAResult(BaseModel):
     question: Question = Field(description="The question of the interview")

@@ -13,7 +13,7 @@ from langgraph.types import StateSnapshot
 def execute_ai_interview_agent(workflow):
     config = {
         "configurable": {"thread_id": uuid.uuid4(), "user_id": "Interviewer"},
-        "model_name": "gpt-4o",
+        "model_name": "claude-3-5-sonnet",
     }
 
     inputs = {
@@ -29,18 +29,18 @@ def execute_ai_interview_agent(workflow):
     for event in events:
         if "messages" in event and len(event["messages"]) > 0:
             message = event["messages"][-1]
-            print(message)
+            pass
 
     snapshot: StateSnapshot = workflow.get_state(config)
     while snapshot.next:        
         
         question = snapshot.values["question"]
-        print("AI :> " + question.question)
+        print("AI :> " + question)
 
         user_input = input('User :> ')
         events = workflow.invoke(Command(resume="Go ahead", update={"user_answer": user_input}), config=config)
         for event in events:
-            print(event)
+            pass
 
         snapshot = workflow.get_state(config)
 
