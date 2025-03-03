@@ -9,11 +9,15 @@ setup(
         "langchain-openai",
         "langgraph",
         "python-dotenv",
-        "pydantic"
+        "pydantic",
+        "loguru"
     ],
     package_data={
         'agent': ['prompts/*.txt'],  # Include prompt files
     },
+    data_files=[
+        ('logs', [])  # Create empty logs directory
+    ],
     author="Huaying",
     author_email="",
     description="An AI-powered interview system",
