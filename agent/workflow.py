@@ -14,7 +14,7 @@ from utils.llm import get_model
 from agent.interview_response import Question, AnalyzeAnswerResponse
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
-
+from datetime import datetime
 
 def kickoff_interview(state: AgentState,     
                       config: RunnableConfig):
@@ -28,13 +28,13 @@ def kickoff_interview(state: AgentState,
                                                               language=state["language"]))
 
     model_name: str = config["configurable"].get("model_name", "gpt-4o")
-    model: ChatOpenAI = get_model(model=model_name).with_structured_output(Question)
+    model: ChatOpenAI = get_model(model=model_name).with_structured_output(Question, strict=True, method="json_schema")
     
-    print("System : > " + human_prompt.content)
+    print("System :> " + human_prompt.content)
     response: Question = model.invoke([human_prompt])
 
     ai_response: AIMessage = AIMessage(content=response.model_dump_json(indent=2))
-    print("AI : > " + response.model_dump_json(indent=2))
+    print("AI :> " + response.model_dump_json(indent=2))
 
     return {
         "messages": [human_prompt, response.question],
@@ -47,14 +47,17 @@ def analyze_answer(state: AgentState,
 
     print("========== Analyze Answer ==========")
 
+    elapsed_time = (datetime.now() - state["start_time"]).total_seconds() / 60
+
     answer: str = state["user_answer"]
-    user_message = HumanMessage(content= answer + """\n\n1 minute passed
+    user_message = HumanMessage(content = answer + """\n\ntotal {elapsed_time} minutes passed
                                 """)
 
     model_name = config["configurable"].get("model_name", "gpt-4o")
-    model = get_model(model=model_name).with_structured_output(AnalyzeAnswerResponse)
+    model = get_model(model=model_name).with_structured_output(AnalyzeAnswerResponse, strict=True, method="json_schema")
     
     response: AnalyzeAnswerResponse = model.invoke(state["messages"] + [user_message])
+    print("AI Analysis :> " + response.model_dump_json(indent=2))
 
     # append user answer into chat history
     # and get feedback from AI
@@ -159,6 +162,7 @@ def build_graph():
     memory = MemorySaver()
     graph = workflow.compile(checkpointer=memory,
                              interrupt_before=["analyze_answer"])
+    
     return graph
 
 if __name__ == "__main__":

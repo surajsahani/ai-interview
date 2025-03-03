@@ -20,7 +20,7 @@ def execute_ai_interview_agent(workflow):
         "start_time": datetime.now(),
         "messages": [],
         "job_title": "Java API Engineer",
-        "knowledge_points": "Java, SpringBoot",
+        "knowledge_points": "Java, SpringBoot, JVM, Multi-thread",
         "interview_time": 3,
         "language": "Chinese"
     }
