@@ -1,0 +1,19 @@
+# 技术栈
+- Python
+- Langchain
+- Langgraph
+- pydantic
+- FastAPI
+
+# 项目结构
+- api   : 提供API服务
+- agent : 实现 AI agent 功能
+- utils : 通用的工具类
+- tests : 单元测试目录
+- notebook : Juypter Notebook 目录
+
+# 代码要求
+- 注重代码质量
+- 符合Python语言特性
+- 良好的注释
+- 良好的日志打印
