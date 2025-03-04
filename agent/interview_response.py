@@ -42,5 +42,6 @@ class QAResult(BaseModel):
     question: Question = Field(description="The question of the interview")
     answer: Answer = Field(description="The answer of the question")
     is_interview_over: bool = Field(description="Whether the interview is over")
+    summary: str = Field(description="The summary of the question and answer")
     
 

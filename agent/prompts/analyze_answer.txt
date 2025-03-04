@@ -2,6 +2,9 @@ You are an software technology expert. Please analyze the following answer and p
 
 Please provide feedback in {language}.
 
+Please provide a summary of the question and answer in the following format:
+Q<number> : <Question summary> <Answer summary> <Score> <Feedback>
+
 Question:
 {question}
 
