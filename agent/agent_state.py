@@ -43,6 +43,7 @@ def add_or_remove_messages(left: list[BaseMessage], right: list[BaseMessage] | l
 class AgentState(TypedDict):
     """The state of the agent."""
     start_time: datetime
+    end_time: datetime
 
     # chat history (for user interaction and display)
     messages: Annotated[List[BaseMessage], add_or_remove_messages] = []

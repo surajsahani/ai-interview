@@ -53,7 +53,8 @@ def analyze_answer(state: AgentState,
 
     logger.info("========== Analyze Answer ==========")
 
-    elapsed_time = (datetime.now() - state["start_time"]).total_seconds() / 60
+    end_time = datetime.now()
+    elapsed_time = (end_time - state["start_time"]).total_seconds() / 60
     answer: str = state["user_answer"]
     user_message = answer + f"""\n\ntotal {elapsed_time} minutes passed"""
     if is_stop_by_user(answer):
@@ -82,6 +83,7 @@ def analyze_answer(state: AgentState,
     qa_tuple = (state["question"], answer, response)
 
     return {
+        "end_time": end_time,
         "messages": [HumanMessage(content=user_message)], 
         "analyze_answer_response": response,
         "qa_history": [qa_tuple]
@@ -114,9 +116,10 @@ def send_next_question(state: AgentState,
     model: ChatOpenAI = get_model(model=model_name)
     
     prompt_content: str = load_prompt('prompts/kickoff_interview.txt')
+    elapsed_time = (state["end_time"] - state["start_time"]).total_seconds() / 60
     human_prompt: HumanMessage = HumanMessage(content=prompt_content.format(job_title=state["job_title"], 
                                                               knowledge_points=state["knowledge_points"],
-                                                              interview_time=state["interview_time"],
+                                                              interview_time=elapsed_time,
                                                               language=state["language"],
                                                               qa_history=get_qa_history(state["qa_history"])))
 

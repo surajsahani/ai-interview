@@ -51,5 +51,6 @@ class InterviewResult(BaseModel):
     total_question_number: int = Field(description="The total number of questions")
     correct_question_number: int = Field(description="The number of correct questions")
     score: int = Field(description="The score of the interview (0-10)")
+    interview_time: int = Field(description="The time of the interview (in minutes)")
 
 

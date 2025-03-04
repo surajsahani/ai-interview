@@ -50,6 +50,7 @@ if __name__ == "__main__":
 
     inputs = {
         "start_time": datetime.now(),
+        "end_time": datetime.now(),
         "messages": [],
         "job_title": "React Web Developer",
         "knowledge_points": "React, JavaScript, TypeScript, React Router, React State Management, Redux, React Hooks, React Context API, React Performance Optimization",
