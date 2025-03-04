@@ -57,14 +57,15 @@ class AgentState(TypedDict):
     interview_time: int = 3
     language: Language = Language.ENGLISH
     difficulty: str = "Medium"
-    
+
     # current user answer and feedback
+    # feedback will be shown to user, it could be question or follow-up question
     question: str | None = None
     feedback: str | None = None
     user_answer: str | None = None
     analyze_answer_response: QAResult | None = None
 
-    # interview result
+    # final interview result
     interview_result: InterviewResult | None = None
 
 def get_qa_history(qa_history: List[Tuple[str, str, QAResult]]) -> str:

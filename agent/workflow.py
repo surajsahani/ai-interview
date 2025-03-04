@@ -47,7 +47,9 @@ def kickoff_interview(state: AgentState,
 
 
 def is_stop_by_user(user_answer: str) -> bool:
-    return "结束面试" in user_answer or "End Interview" in user_answer or "Stop Interview" in user_answer
+    return "结束面试" in user_answer or \
+           "End Interview" in user_answer or \
+           "Stop Interview" in user_answer
 
 
 def analyze_answer(state: AgentState,   
@@ -61,21 +63,21 @@ def analyze_answer(state: AgentState,
     user_message = answer + f"""\n\ntotal {elapsed_time} minutes passed"""
     if is_stop_by_user(answer):
         logger.info(f"Interview is stopped by user answer {answer}")
-        qa_result = QAResult(question=Question(question=state["question"],
+        qa_result = QAResult(question=Question( question=state["question"],
                                                 question_number=-1,
                                                 question_type=QuestionType.NONE,
                                                 knowledge_point="",
                                                 answer=""), 
-                            answer=Answer(is_valid=False, 
-                                        feedback="Interview is stopped by user", 
-                                        is_correct=False, 
-                                        analysis="", 
-                                        giveup=False,
-                                        suggest_more_details=False,
-                                        follow_up_question="",
-                                        score=0),
-                            is_interview_over=True,
-                            summary="Last question is not answered due to the interview is stopped by user")
+                             answer=Answer( is_valid=False, 
+                                            feedback="Interview is stopped by user", 
+                                            is_correct=False, 
+                                            analysis="", 
+                                            giveup=False,
+                                            suggest_more_details=False,
+                                            follow_up_question="",
+                                            score=0),
+                             is_interview_over=True,
+                             summary="Last question is not answered due to the interview is stopped by user")
         return {
             "messages": [HumanMessage(content=user_message)], 
             "analyze_answer_response": qa_result,
@@ -103,14 +105,16 @@ def repeat_question(state: AgentState,
 
     qa_result: QAResult = state["analyze_answer_response"]
     ai_response: AIMessage = AIMessage(content=qa_result.answer.feedback)   
-    
-    # logger.info(f"Feedback : {qa_result.answer.feedback}")
+
+    # for default scenarios, e.g. user sent invalid answer
     feedback = qa_result.answer.feedback
 
     # if the answer is too short, suggest more details
+    # need to show the follow-up question to user
     if qa_result.answer.suggest_more_details and qa_result.answer.follow_up_question:
         feedback = qa_result.answer.follow_up_question
 
+    logger.info(f"Need to repeat question, feedback: {feedback}")
     return {
         "messages": [ai_response],
         "feedback": feedback,
