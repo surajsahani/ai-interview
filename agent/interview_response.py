@@ -34,7 +34,9 @@ class AnalyzeAnswerResponse(BaseModel):
 class Answer(BaseModel):
     is_valid: bool = Field(description="Whether the answer is a valid response")
     giveup: bool = Field(description="Whether the user wants to giveup or skip the question")
-    feedback: str = Field(description="Friendly feedback of the answer")
+    suggest_more_details: bool = Field(description="Anaswer is too short, suggest more details")
+    follow_up_question: str = Field(description="Provide a friendly follow-up question to get more details of the answer")
+    feedback: str = Field(description="Provide a friendly feedback to the user")
     is_correct: bool = Field(description="Whether the answer is correct")
     analysis: str = Field(description="The analysis of the answer")
     score: int = Field(description="The score of the answer (0-5)")

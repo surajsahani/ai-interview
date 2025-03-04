@@ -28,8 +28,8 @@ def execute_ai_interview_agent(workflow, inputs: dict):
     while snapshot.next:        
         
         # show the question to user
-        question = snapshot.values["question"]
-        print("AI :> " + question)
+        feedback = snapshot.values["feedback"]
+        print("AI :> " + feedback)
 
         # get the user answer
         user_input = input('User :> ')
@@ -55,6 +55,7 @@ if __name__ == "__main__":
     #     "knowledge_points": "Java, SpringBoot, JVM, CompletableFuture, Design Pattern, SpringBoot ControllerAdvice",
     #     "interview_time": 3,
     #     "language": "Chinese"
+    #     "difficulty": "中级"
     # }
 
     inputs = {
@@ -64,6 +65,7 @@ if __name__ == "__main__":
         "job_title": "React Web Developer",
         "knowledge_points": "React, JavaScript, TypeScript, React Router, React State Management, Redux, React Hooks, React Context API, React Performance Optimization",
         "interview_time": 3,
-        "language": "Chinese"
+        "language": "Chinese",
+        "difficulty": "Medium"
     }
     execute_ai_interview_agent(workflow, inputs)

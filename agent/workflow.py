@@ -30,6 +30,7 @@ def kickoff_interview(state: AgentState,
                                                               knowledge_points=state["knowledge_points"],
                                                               interview_time=state["interview_time"],
                                                               language=state["language"],
+                                                              difficulty=state["difficulty"],
                                                               qa_history=get_qa_history(state["qa_history"])))
 
     model_name: str = config["configurable"].get("model_name", "gpt-4o")
@@ -40,7 +41,8 @@ def kickoff_interview(state: AgentState,
 
     return {
         "messages": [human_prompt, response],
-        "question": response.content
+        "question": response.content,
+        "feedback": response.content
     }
 
 
@@ -69,13 +71,15 @@ def analyze_answer(state: AgentState,
                                         is_correct=False, 
                                         analysis="", 
                                         giveup=False,
-                                        score=0,
-                                        correct_answer=""),
+                                        suggest_more_details=False,
+                                        follow_up_question="",
+                                        score=0),
                             is_interview_over=True,
                             summary="Last question is not answered due to the interview is stopped by user")
         return {
             "messages": [HumanMessage(content=user_message)], 
             "analyze_answer_response": qa_result,
+            "feedback": qa_result.answer.feedback,
             "qa_history": [(state["question"], answer, qa_result)]
         }
 
@@ -100,11 +104,16 @@ def repeat_question(state: AgentState,
     qa_result: QAResult = state["analyze_answer_response"]
     ai_response: AIMessage = AIMessage(content=qa_result.answer.feedback)   
     
-    logger.info(f"Feedback : {qa_result.answer.feedback}")
+    # logger.info(f"Feedback : {qa_result.answer.feedback}")
+    feedback = qa_result.answer.feedback
+
+    # if the answer is too short, suggest more details
+    if qa_result.answer.suggest_more_details and qa_result.answer.follow_up_question:
+        feedback = qa_result.answer.follow_up_question
 
     return {
         "messages": [ai_response],
-        "user_answer": None,
+        "feedback": feedback,
         "analyze_answer_response": None,
     }
 
@@ -123,6 +132,7 @@ def send_next_question(state: AgentState,
                                                               knowledge_points=state["knowledge_points"],
                                                               interview_time=elapsed_time,
                                                               language=state["language"],
+                                                              difficulty=state["difficulty"],
                                                               qa_history=get_qa_history(state["qa_history"])))
 
     # response = model.invoke(state["messages"])
@@ -136,6 +146,7 @@ def send_next_question(state: AgentState,
     return {
         "messages": [ai_message],
         "question": response.content,
+        "feedback": response.content,
         "user_answer": None,
         "analyze_answer_response": None,
     }
@@ -193,6 +204,10 @@ def check_analyze_answer_response_condition(state: AgentState,
     if qa_result.answer and not qa_result.answer.is_valid and not qa_result.answer.giveup:
         logger.info("Invalid answer, repeating question")
         return "repeat_question"
+    
+    if qa_result.answer and qa_result.answer.suggest_more_details:
+        logger.info("Suggest more details, repeating question")
+        return "repeat_question"
 
     logger.info("Moving to next question")
     return "send_next_question"
@@ -236,7 +251,7 @@ def build_graph():
     memory = MemorySaver()
     graph = workflow.compile(checkpointer=memory,
                              interrupt_before=["analyze_answer"])
-    
+     
     return graph
 
 

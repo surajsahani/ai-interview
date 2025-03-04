@@ -56,9 +56,11 @@ class AgentState(TypedDict):
     knowledge_points: str
     interview_time: int = 3
     language: Language = Language.ENGLISH
-
+    difficulty: str = "Medium"
+    
     # current user answer and feedback
     question: str | None = None
+    feedback: str | None = None
     user_answer: str | None = None
     analyze_answer_response: QAResult | None = None
 
