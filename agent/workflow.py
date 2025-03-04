@@ -69,7 +69,8 @@ def analyze_answer(state: AgentState,
                                         is_correct=False, 
                                         analysis="", 
                                         giveup=False,
-                                        score=0),
+                                        score=0,
+                                        correct_answer=""),
                             is_interview_over=True,
                             summary="Last question is not answered due to the interview is stopped by user")
         return {
