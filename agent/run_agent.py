@@ -16,23 +16,29 @@ def execute_ai_interview_agent(workflow, inputs: dict):
         "model_name": "gpt-4o",
     }
 
+    # start the interview, generate the first question
     events = workflow.stream(inputs, config=config, stream_mode="values")
     for event in events:
-        if "messages" in event and len(event["messages"]) > 0:
-            message = event["messages"][-1]
-            pass
+        pass
 
     snapshot: StateSnapshot = workflow.get_state(config)
     while snapshot.next:        
         
+        # show the question to user
         question = snapshot.values["question"]
         print("AI :> " + question)
 
+        # get the user answer
         user_input = input('User :> ')
+
+        # resume the interview workflow
+        # pass user answer and get the result
+        # then generate next question
         events = workflow.invoke(Command(resume="Go ahead", update={"user_answer": user_input}), config=config)
         for event in events:
             pass
 
+        # get the snapshot state (next question is in the snapshot)
         snapshot = workflow.get_state(config)
 
 

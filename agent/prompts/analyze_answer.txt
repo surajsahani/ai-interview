@@ -1,4 +1,4 @@
-You are an software technology expert. Please analyze the following answer and provide a score and feedback.
+You are an software technology expert. Please analyze the following answer and provide a score (0-5) and feedback.
 
 Please provide feedback in {language}.
 
