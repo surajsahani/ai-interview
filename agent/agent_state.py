@@ -10,7 +10,7 @@ from typing import (
 )
 from langchain_core.messages import BaseMessage
 from langgraph.graph.message import add_messages
-from agent.interview_response import QAResult
+from agent.interview_response import QAResult, InterviewResult
 from enum import Enum
 from datetime import datetime
 from langchain_core.messages import HumanMessage
@@ -61,7 +61,8 @@ class AgentState(TypedDict):
     user_answer: str | None = None
     analyze_answer_response: QAResult | None = None
 
-
+    # interview result
+    interview_result: InterviewResult | None = None
 
 def get_qa_history(qa_history: List[Tuple[str, str, QAResult]]) -> str:
     if len(qa_history) == 0:

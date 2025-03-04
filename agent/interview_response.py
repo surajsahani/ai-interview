@@ -46,3 +46,10 @@ class QAResult(BaseModel):
     summary: str = Field(description="The summary of the question and answer")
     
 
+class InterviewResult(BaseModel):
+    summary: str = Field(description="The summary of the interview")
+    total_question_number: int = Field(description="The total number of questions")
+    correct_question_number: int = Field(description="The number of correct questions")
+    score: int = Field(description="The score of the interview (0-10)")
+
+

@@ -18,6 +18,7 @@ from datetime import datetime
 from agent.qa_analyzer import analyze_question_answer   
 from utils.log_utils import logger
 from agent.agent_state import get_qa_history
+from agent.interview_response import InterviewResult
 
 def kickoff_interview(state: AgentState,     
                       config: RunnableConfig):
@@ -138,7 +139,24 @@ def send_next_question(state: AgentState,
 def summarize_interview(state: AgentState,
                         config: RunnableConfig):
     logger.info("========== Summarize Interview ==========")
-    pass
+
+    prompt_content: str = load_prompt('prompts/summarize_interview.txt')
+    human_prompt: HumanMessage = HumanMessage(content=prompt_content.format(job_title=state["job_title"], 
+                                                              knowledge_points=state["knowledge_points"],
+                                                              interview_time=state["interview_time"],
+                                                              language=state["language"],
+                                                              qa_history=get_qa_history(state["qa_history"])))
+
+    model_name: str = config["configurable"].get("model_name", "gpt-4o")
+    model: ChatOpenAI = get_model(model=model_name).with_structured_output(InterviewResult)
+    
+    logger.info(f"System : {human_prompt.content}")
+    response: InterviewResult = model.invoke([human_prompt])
+    logger.info(f"Interview Result : {response.model_dump_json(indent=2)}")
+
+    return {
+        "interview_result": response
+    }
 
 
 def is_over_condition(state: AgentState,
