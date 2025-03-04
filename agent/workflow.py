@@ -141,7 +141,6 @@ def send_next_question(state: AgentState,
                                                               difficulty=state["difficulty"],
                                                               qa_history=get_qa_history(state["qa_history"])))
 
-    # response = model.invoke(state["messages"])
     logger.info(f"System : {human_prompt.content}")
     response = model.invoke([human_prompt])
 
@@ -169,7 +168,7 @@ def summarize_interview(state: AgentState,
                                                               language=state["language"],
                                                               qa_history=get_qa_history(state["qa_history"])))
 
-    model_name: str = "gpt-4o" # config["configurable"].get("model_name", "gpt-4o")
+    model_name: str = config["configurable"].get("model_name", "gpt-4o")
     model: ChatOpenAI = get_model(model=model_name).with_structured_output(InterviewResult)
     
     logger.info(f"System : {human_prompt.content}")
