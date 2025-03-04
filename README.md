@@ -59,14 +59,9 @@ An AI-powered technical interview system that conducts automated interviews usin
 
 ## Installation
 
-### Install from PyPI
-```bash
-pip install ai-interview
-```
-
 ### Install from source
 ```bash
-git clone https://github.com/gckjdev/ai-interview.git
+git clone <git repo url>
 cd ai-interview
 pip install -r requirements.txt
 ```
@@ -125,7 +120,7 @@ OPENAI_BASE_URL=your-base-url
 ### Model Configuration
 The system uses GPT-4 by default. You can configure different models:
 ```python
-config = {"configurable": {"model_name": "gpt-4"}}
+config = {"configurable": {"model_name": "gpt-4o"}}
 graph.stream(inputs, config=config)
 ```
 
