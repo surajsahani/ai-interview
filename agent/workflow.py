@@ -177,7 +177,8 @@ def summarize_interview(state: AgentState,
     logger.info(f"Interview Result : {response.model_dump_json(indent=2)}")
 
     return {
-        "interview_result": response
+        "interview_result": response,
+        "feedback": "Interview is over. Thank you for your participation."
     }
 
 
