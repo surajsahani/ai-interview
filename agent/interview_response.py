@@ -33,6 +33,7 @@ class AnalyzeAnswerResponse(BaseModel):
 
 class Answer(BaseModel):
     is_valid: bool = Field(description="Whether the answer is a valid response")
+    giveup: bool = Field(description="Whether the user wants to giveup or skip the question")
     feedback: str = Field(description="Friendly feedback of the answer")
     is_correct: bool = Field(description="Whether the answer is correct")
     analysis: str = Field(description="The analysis of the answer")

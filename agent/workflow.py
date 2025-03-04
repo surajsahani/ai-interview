@@ -68,6 +68,7 @@ def analyze_answer(state: AgentState,
                                         feedback="Interview is stopped by user", 
                                         is_correct=False, 
                                         analysis="", 
+                                        giveup=False,
                                         score=0),
                             is_interview_over=True,
                             summary="Last question is not answered due to the interview is stopped by user")
@@ -188,7 +189,7 @@ def check_analyze_answer_response_condition(state: AgentState,
         logger.info("Interview is over")
         return "summarize_interview"
 
-    if qa_result.answer and not qa_result.answer.is_valid:
+    if qa_result.answer and not qa_result.answer.is_valid and not qa_result.answer.giveup:
         logger.info("Invalid answer, repeating question")
         return "repeat_question"
 
