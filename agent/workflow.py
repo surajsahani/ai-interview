@@ -17,6 +17,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from datetime import datetime   
 from agent.qa_analyzer import analyze_question_answer   
 from utils.log_utils import logger
+from agent.agent_state import get_qa_history
 
 def kickoff_interview(state: AgentState,     
                       config: RunnableConfig):
@@ -27,7 +28,8 @@ def kickoff_interview(state: AgentState,
     human_prompt: HumanMessage = HumanMessage(content=prompt_content.format(job_title=state["job_title"], 
                                                               knowledge_points=state["knowledge_points"],
                                                               interview_time=state["interview_time"],
-                                                              language=state["language"]))
+                                                              language=state["language"],
+                                                              qa_history=get_qa_history(state["qa_history"])))
 
     model_name: str = config["configurable"].get("model_name", "gpt-4o")
     model: ChatOpenAI = get_model(model=model_name)
@@ -53,9 +55,12 @@ def analyze_answer(state: AgentState,
     model_name = config["configurable"].get("model_name", "gpt-4o")
     response: QAResult = analyze_question_answer(user_message, state["question"], state["language"])
 
+    qa_tuple = (state["question"], answer, response)
+
     return {
         "messages": [HumanMessage(content=user_message)], 
-        "analyze_answer_response": response
+        "analyze_answer_response": response,
+        "qa_history": [qa_tuple]
     }    
 
 
@@ -84,7 +89,16 @@ def send_next_question(state: AgentState,
     model_name: str = config["configurable"].get("model_name", "gpt-4o")
     model: ChatOpenAI = get_model(model=model_name)
     
-    response = model.invoke(state["messages"])
+    prompt_content: str = load_prompt('prompts/kickoff_interview.txt')
+    human_prompt: HumanMessage = HumanMessage(content=prompt_content.format(job_title=state["job_title"], 
+                                                              knowledge_points=state["knowledge_points"],
+                                                              interview_time=state["interview_time"],
+                                                              language=state["language"],
+                                                              qa_history=get_qa_history(state["qa_history"])))
+
+    # response = model.invoke(state["messages"])
+    logger.info(f"System : {human_prompt.content}")
+    response = model.invoke([human_prompt])
 
     qa_result: QAResult = state["analyze_answer_response"]
     ai_analysis = "User answer analysis:\n\n" + qa_result.answer.model_dump_json(indent=2) + "\n\n"

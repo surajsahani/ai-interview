@@ -2,6 +2,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+
 from typing import (
     Annotated,
     Sequence,
@@ -13,7 +14,8 @@ from agent.interview_response import QAResult
 from enum import Enum
 from datetime import datetime
 from langchain_core.messages import HumanMessage
-from typing import List
+from typing import List, Tuple
+import operator
 
 class Language(str, Enum):
     ENGLISH = "English"
@@ -43,7 +45,10 @@ class AgentState(TypedDict):
     start_time: datetime
 
     # chat history (for user interaction and display)
-    messages: Annotated[List[BaseMessage], add_or_remove_messages]
+    messages: Annotated[List[BaseMessage], add_or_remove_messages] = []
+
+    # question & answer history (question, answer, QAResult)
+    qa_history: Annotated[List[Tuple[str, str, QAResult]], operator.add] = []
 
     # interview requirement
     job_title: str
@@ -55,6 +60,14 @@ class AgentState(TypedDict):
     question: str | None = None
     user_answer: str | None = None
     analyze_answer_response: QAResult | None = None
+
+
+
+def get_qa_history(qa_history: List[Tuple[str, str, QAResult]]) -> str:
+    if len(qa_history) == 0:
+        return "None"
+    else:
+        return "\n".join([f"{qa[2].summary}" for i, qa in enumerate(qa_history)])
 
 
 if __name__ == "__main__":
