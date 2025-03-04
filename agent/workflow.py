@@ -11,7 +11,7 @@ from agent.agent_state import AgentState
 from pydantic import BaseModel, Field   
 from utils.prompt_utils import load_prompt
 from utils.llm import get_model
-from agent.interview_response import Question, AnalyzeAnswerResponse, QAResult
+from agent.interview_response import Question, AnalyzeAnswerResponse, QAResult, Answer, QuestionType
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 from datetime import datetime   
@@ -43,6 +43,10 @@ def kickoff_interview(state: AgentState,
     }
 
 
+def is_stop_by_user(user_answer: str) -> bool:
+    return "结束面试" in user_answer or "End Interview" in user_answer or "Stop Interview" in user_answer
+
+
 def analyze_answer(state: AgentState,   
                    config: RunnableConfig):
 
@@ -51,6 +55,25 @@ def analyze_answer(state: AgentState,
     elapsed_time = (datetime.now() - state["start_time"]).total_seconds() / 60
     answer: str = state["user_answer"]
     user_message = answer + f"""\n\ntotal {elapsed_time} minutes passed"""
+    if is_stop_by_user(answer):
+        logger.info(f"Interview is stopped by user answer {answer}")
+        qa_result = QAResult(question=Question(question=state["question"],
+                                                question_number=-1,
+                                                question_type=QuestionType.NONE,
+                                                knowledge_point="",
+                                                answer=""), 
+                            answer=Answer(is_valid=False, 
+                                        feedback="Interview is stopped by user", 
+                                        is_correct=False, 
+                                        analysis="", 
+                                        score=0),
+                            is_interview_over=True,
+                            summary="Last question is not answered due to the interview is stopped by user")
+        return {
+            "messages": [HumanMessage(content=user_message)], 
+            "analyze_answer_response": qa_result,
+            "qa_history": [(state["question"], answer, qa_result)]
+        }
 
     model_name = config["configurable"].get("model_name", "gpt-4o")
     response: QAResult = analyze_question_answer(user_message, state["question"], state["language"])

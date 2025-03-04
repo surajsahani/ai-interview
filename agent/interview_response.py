@@ -7,6 +7,7 @@ class QuestionType(str, Enum):
     ESSAY = "Essay"
     SHORT_ANSWER = "Short Answer"
     TRUE_FALSE = "True False"
+    NONE = "None"
 
 
 class Question(BaseModel):
