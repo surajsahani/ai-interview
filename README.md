@@ -221,6 +221,45 @@ curl http://localhost:8000/api/v1/health
 # {"status": "ok"}
 ```
 
+### User Management
+
+#### Create User
+```bash
+# Create a new user
+curl -X POST http://localhost:8000/api/v1/user \
+  -H "Content-Type: application/json" \
+  -d '{
+    "user_name": "john_doe",
+    "password": "secure_password123",
+    "email": "john.doe@example.com",
+    "staff_id": "EMP001",
+    "role": 1
+  }'
+
+# Expected response:
+# {
+#   "code": "0",
+#   "message": "success",
+#   "data": {
+#     "user_id": "550e8400-e29b-41d4-a716-446655440000",
+#     "user_name": "john_doe",
+#     "staff_id": "EMP001",
+#     "email": "john.doe@example.com",
+#     "status": 0,
+#     "role": 1,
+#     "create_date": "2024-03-20T10:00:00.000Z"
+#   }
+# }
+```
+
+Field descriptions:
+- `user_name`: Required. The name of the user
+- `password`: Required. User's password (will be hashed)
+- `email`: Required. Valid email address
+- `staff_id`: Optional. Employee ID or staff reference number
+- `role`: Optional. 0 for interviewer, 1 for interviewee (default: 1)
+- `status`: Auto-set. 0 for active, 1 for inactive
+
 ### Create Test
 
 ```bash

@@ -5,6 +5,9 @@ from mongoengine import connect, disconnect
 from api.main import app
 from api.conf.config import Config
 
+# Mark all tests in this directory as async
+pytestmark = pytest.mark.asyncio
+
 # Filter out warnings
 warnings.filterwarnings(
     "ignore",
@@ -13,8 +16,11 @@ warnings.filterwarnings(
 )
 
 @pytest.fixture(scope="session", autouse=True)
-def setup_test_db():
+async def setup_test_db():
     """Setup test database connection"""
+    # Disconnect any existing connections first
+    disconnect(alias='default')
+    
     config = Config.load_config()
     
     # Use a test database
@@ -27,15 +33,16 @@ def setup_test_db():
         port=config.mongodb.port,
         username=config.mongodb.username,
         password=config.mongodb.password,
-        authentication_source=config.mongodb.authentication_source
+        authentication_source=config.mongodb.authentication_source,
+        alias='default'
     )
     
     yield
     
     # Cleanup after tests
-    disconnect()
+    disconnect(alias='default')
 
 @pytest.fixture
-def client():
+async def client():
     """Test client fixture"""
     return TestClient(app) 

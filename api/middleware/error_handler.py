@@ -1,38 +1,55 @@
 from fastapi import Request
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException
+from api.exceptions.api_error import APIError
+from api.model.api.base import Response
 from loguru import logger
-from api.model.api.base import Response, ResponseCode
 
-async def http_exception_handler(request: Request, exc):
-    """Handle HTTP exceptions and log the error"""
-    error_msg = f"HTTP error occurred: {exc.status_code} - {exc.detail}"
-    logger.error(f"{error_msg}\nPath: {request.url.path}")
-    
+async def api_error_handler(request: Request, exc: APIError) -> JSONResponse:
+    """Handle API errors"""
+    logger.error(f"API error: {exc.message}")
     return JSONResponse(
-        status_code=exc.status_code,
+        status_code=int(exc.code),
         content=Response(
-            code=ResponseCode.FAILED,
-            message=str(exc.detail),
+            code=exc.code,
+            message=exc.message,
             data=None
         ).model_dump()
     )
 
-async def validation_exception_handler(request: Request, exc):
-    """Handle validation errors and log the details"""
-    error_details = exc.errors()
-    error_msg = "Validation error occurred:"
-    for error in error_details:
-        logger.error(f"{error_msg}\n"
-                    f"Location: {' -> '.join(error['loc'])}\n"
-                    f"Type: {error['type']}\n"
-                    f"Message: {error['msg']}\n"
-                    f"Path: {request.url.path}")
-    
+async def http_exception_handler(request: Request, exc: HTTPException) -> JSONResponse:
+    """Handle HTTP exceptions"""
+    logger.error(f"HTTP error: {exc.detail}")
     return JSONResponse(
-        status_code=400,
+        status_code=exc.status_code,
         content=Response(
-            code=ResponseCode.INVALID_PARAMS,
-            message=str(error_details),
+            code=str(exc.status_code),
+            message=exc.detail,
+            data=None
+        ).model_dump()
+    )
+
+async def validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+    """Handle validation errors"""
+    logger.error(f"Validation error: {exc.errors()}")
+    return JSONResponse(
+        status_code=422,
+        content=Response(
+            code="422",
+            message="Validation error",
+            data={"errors": exc.errors()}
+        ).model_dump()
+    )
+
+async def generic_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    """Handle unexpected errors"""
+    logger.error(f"Unexpected error: {str(exc)}")
+    return JSONResponse(
+        status_code=500,
+        content=Response(
+            code="500",
+            message="Internal server error",
             data=None
         ).model_dump()
     ) 

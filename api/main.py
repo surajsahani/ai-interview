@@ -8,8 +8,14 @@ import uvicorn
 from api.conf.config import Config
 from api.infra.mongo.connection import init_mongodb
 from api.middleware.logging import LoggingMiddleware
-from api.middleware.error_handler import http_exception_handler, validation_exception_handler
-from api.router import health, test
+from api.middleware.error_handler import (
+    api_error_handler,
+    http_exception_handler,
+    validation_exception_handler,
+    generic_exception_handler
+)
+from api.router import health, test, user
+from api.exceptions.api_error import APIError
 
 # Load configuration
 config = Config.load_config()
@@ -42,12 +48,15 @@ app.add_middleware(
 )
 
 # Register exception handlers
+app.add_exception_handler(APIError, api_error_handler)
 app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
+app.add_exception_handler(Exception, generic_exception_handler)
 
 # Register routers
 app.include_router(health.router, prefix=config.app.api_v1_str)
 app.include_router(test.router, prefix=config.app.api_v1_str)
+app.include_router(user.router, prefix=config.app.api_v1_str)
 
 # Run the API server
 # uvicorn api.main:app --reload
