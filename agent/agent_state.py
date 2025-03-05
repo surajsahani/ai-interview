@@ -78,6 +78,13 @@ class AgentState(TypedDict):
 
 
 def get_qa_history(qa_history: List[Tuple[str, str, QAResult]]) -> str:
+    """Generate the history string of the question and answer.
+    Args:
+        qa_history: The history of the question and answer.
+
+    Returns:
+        The history string of the question and answer.
+    """
     if len(qa_history) == 0:
         return "None"
     else:
