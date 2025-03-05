@@ -9,7 +9,7 @@ An AI-powered technical interview system that conducts automated interviews usin
 The interview system follows a structured workflow:
 1. **Kickoff Interview**: Begins the interview with initial question
 2. **Analyze Answer**: Evaluates candidate responses
-3. **Repeat Question**: Repeats the question if the answer is not correct
+3. **Repeat Question**: Repeats the question if the answer is not valid
 4. **Send Next Question**: Sends the next question to the candidate
 5. **Summarize Interview**: Summarizes the interview
 
