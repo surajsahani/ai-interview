@@ -3,40 +3,54 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
 from starlette.exceptions import HTTPException
 from loguru import logger
+import uvicorn
 
-from api.conf.config import settings
+from api.conf.config import Config
 from api.middleware.logging import LoggingMiddleware
 from api.middleware.error_handler import http_exception_handler, validation_exception_handler
 from api.router import health, test
 
-# 配置日志
+# Load configuration
+config = Config.load_config()
+
+# Configure logging
 logger.add(
-    settings.LOG_FILE,
-    level=settings.LOG_LEVEL,
-    format=settings.LOG_FORMAT,
-    rotation="500 MB"
+    config.logging.file,
+    level=config.logging.level,
+    format=config.logging.format,
+    rotation=config.logging.rotation
 )
 
 app = FastAPI(
-    title=settings.APP_NAME,
-    openapi_url=f"{settings.API_V1_STR}/openapi.json",
-    docs_url=f"{settings.API_V1_STR}/docs",
+    title=config.app.name,
+    openapi_url=f"{config.app.api_v1_str}/openapi.yaml",
+    docs_url=f"{config.app.api_v1_str}/doc",
 )
 
-# 添加中间件
+# Add middleware
 app.add_middleware(LoggingMiddleware)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=config.cors.allow_origins,
+    allow_credentials=config.cors.allow_credentials,
+    allow_methods=config.cors.allow_methods,
+    allow_headers=config.cors.allow_headers,
 )
 
-# 注册异常处理器
+# Register exception handlers
 app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
-# 注册路由
-app.include_router(health.router, prefix=settings.API_V1_STR)
-app.include_router(test.router, prefix=settings.API_V1_STR) 
+# Register routers
+app.include_router(health.router, prefix=config.app.api_v1_str)
+app.include_router(test.router, prefix=config.app.api_v1_str)
+
+# Run the API server
+# uvicorn api.main:app --reload
+if __name__ == "__main__":
+    uvicorn.run(
+        "api.main:app",
+        host=config.server.host,
+        port=config.server.port,
+        reload=config.server.reload
+    ) 

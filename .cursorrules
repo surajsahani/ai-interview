@@ -4,6 +4,7 @@
 - Langgraph
 - pydantic
 - FastAPI
+- MongoEngine
 
 # 项目结构
 - api   : 提供API服务
