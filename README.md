@@ -135,7 +135,7 @@ graph.stream(inputs, config=config)
   - python-dotenv >= 1.0.1
   - loguru >= 0.7.3
 
-## Project Structure
+## AI Agent Project Structure
 
 ```
 ai-interview/
@@ -151,6 +151,95 @@ ai-interview/
     ├── llm.py           # LLM configuration
     ├── log_utils.py     # Logging utilities
     └── prompt_utils.py  # Prompt handling
+```
+
+## API Project Structure
+
+```
+api/
+├── __init__.py
+├── main.py
+├── conf/           # Configuration files
+├── doc/           # API documentation
+├── middleware/    # Middleware components
+├── model/        # Data models
+├── router/       # Route handlers
+├── service/      # Business logic
+├── utils/        # Utility functions
+└── logs/         # Log files
+```
+
+## API Installation
+
+1. Create virtual environment (recommended):
+```bash
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or
+.\venv\Scripts\activate  # Windows
+```
+
+2. Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+## Running the Service
+
+Start the server:
+```bash
+uvicorn api.main:app --reload
+```
+
+The service will be running at http://localhost:8000
+
+## API Documentation
+
+Access Swagger documentation at:
+- http://localhost:8000/api/v1/docs
+
+## API Examples
+
+### Health Check
+
+```bash
+# Check service health status
+curl http://localhost:8000/api/v1/health
+
+# Expected response:
+# {"status": "ok"}
+```
+
+### Create Test
+
+```bash
+# Create a test
+curl -X POST http://localhost:8000/api/v1/test \
+  -H "Content-Type: application/json" \
+  -d '{
+    "test_id": "test001",
+    "type": "coding",
+    "language": "python",
+    "difficulty": "medium",
+    "create_date": "2024-03-20T10:00:00"
+  }'
+
+# Expected response:
+# {
+#   "code": "0",
+#   "message": "success",
+#   "data": {
+#     "test_id": "test001",
+#     "status": "created"
+#   }
+# }
+```
+
+## API Testing
+
+Run tests using pytest:
+```bash
+pytest tests/ -v
 ```
 
 ## License

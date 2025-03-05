@@ -67,6 +67,6 @@ if __name__ == "__main__":
         "knowledge_points": "React, JavaScript, TypeScript, React Router, React State Management, Redux, React Hooks, React Context API, React Performance Optimization",
         "interview_time": 3,
         "language": "English",
-        "difficulty": "Low"
+        "difficulty": "Easy"
     }
     execute_ai_interview_agent(workflow, inputs)

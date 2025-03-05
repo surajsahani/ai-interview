@@ -24,9 +24,9 @@ class Language(str, Enum):
 
 
 class Difficulty(str, Enum):
-    LOW = "Low"
+    EASY = "Easy"
     MEDIUM = "Medium"
-    HIGH = "High"
+    HARD = "Hard"
 
 
 def add_or_remove_messages(left: list[BaseMessage], right: list[BaseMessage] | list[str]) -> List[BaseMessage]:
