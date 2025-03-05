@@ -5,11 +5,13 @@ from api.main import app
 
 client = TestClient(app)
 
+# Health check tests
 def test_health_check():
     response = client.get("/api/v1/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
 
+# Test endpoint tests
 def test_create_test():
     test_data = {
         "test_id": "test001",
@@ -30,7 +32,7 @@ def test_create_test():
 def test_create_test_invalid_params():
     test_data = {
         "test_id": "test001",
-        "type": "invalid_type",  # 无效的类型
+        "type": "invalid_type",  # Invalid type
         "language": "python",
         "difficulty": "medium",
         "create_date": datetime.now().isoformat()

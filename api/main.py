@@ -7,7 +7,7 @@ from loguru import logger
 from api.conf.config import settings
 from api.middleware.logging import LoggingMiddleware
 from api.middleware.error_handler import http_exception_handler, validation_exception_handler
-from api.router import test
+from api.router import health, test
 
 # 配置日志
 logger.add(
@@ -38,4 +38,5 @@ app.add_exception_handler(HTTPException, http_exception_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
 # 注册路由
+app.include_router(health.router, prefix=settings.API_V1_STR)
 app.include_router(test.router, prefix=settings.API_V1_STR) 
