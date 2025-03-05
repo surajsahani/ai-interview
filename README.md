@@ -239,7 +239,11 @@ curl -X POST http://localhost:8000/api/v1/test \
 
 Run tests using pytest:
 ```bash
-pytest tests/ -v
+# install the package
+pip install -e .
+
+# run pytest
+pytest tests/api -v
 ```
 
 ## License

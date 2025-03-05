@@ -29,7 +29,7 @@ async def validation_exception_handler(request: Request, exc):
                     f"Path: {request.url.path}")
     
     return JSONResponse(
-        status_code=422,
+        status_code=400,
         content=Response(
             code=ResponseCode.INVALID_PARAMS,
             message=str(error_details),
