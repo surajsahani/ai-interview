@@ -49,15 +49,6 @@ def execute_ai_interview_agent(workflow, inputs: dict):
 
 if __name__ == "__main__":
     workflow = build_graph()
-    # inputs = {
-    #     "start_time": datetime.now(),
-    #     "messages": [],
-    #     "job_title": "Java Engineer",
-    #     "knowledge_points": "Java, SpringBoot, JVM, CompletableFuture, Design Pattern, SpringBoot ControllerAdvice",
-    #     "interview_time": 3,
-    #     "language": "Chinese"
-    #     "difficulty": "中级"
-    # }
 
     inputs = {
         "start_time": datetime.now(),

@@ -20,6 +20,7 @@ from utils.log_utils import logger
 from agent.agent_state import get_qa_history
 from agent.interview_response import InterviewResult
 
+
 def kickoff_interview(state: AgentState,     
                       config: RunnableConfig):
     
@@ -263,4 +264,5 @@ def build_graph():
 
 if __name__ == "__main__":
     graph = build_graph()
+    graph.get_graph().draw_mermaid_png(output_file_path="./graph.png")
 
