@@ -15,8 +15,8 @@ def execute_ai_interview_agent(workflow, inputs: dict):
             "thread_id": uuid.uuid4(), 
             "user_id": "Interviewer"
         },
-        # "model_name": "claude-3-5-sonnet",
-        "model_name": "gpt-4o",
+        "model_name": "claude-3-5-sonnet",
+        # "model_name": "gpt-4o",
         # "model_name": "deepseek-v3",
     }
 
