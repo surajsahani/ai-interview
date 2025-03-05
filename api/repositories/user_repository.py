@@ -21,6 +21,8 @@ class UserRepository:
     @log
     async def get_user_by_staff_id(self, staff_id: str) -> Optional[User]:
         """Get user by staff ID"""
+        if staff_id is None or staff_id == "":
+            return None
         return User.objects(staff_id=staff_id).first()
 
     @log
