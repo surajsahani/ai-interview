@@ -113,7 +113,7 @@ for output in graph.stream(inputs):
 ```
 
 ### Interview Commands
-- `End Interview` - Terminate the interview
+- `Stop Interview` - Terminate the interview
 - `Give up` - Skip current question
 - `Ctrl+C` - Emergency stop
 
