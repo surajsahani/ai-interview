@@ -1,5 +1,5 @@
 import pytest
-from datetime import datetime
+from datetime import datetime, UTC
 from api.model.db.test import Test
 from api.repositories.test_repository import TestRepository
 
@@ -18,7 +18,7 @@ async def test_create_test():
         type="coding",
         language="python",
         difficulty="medium",
-        create_date=datetime.utcnow()
+        create_date=datetime.now(UTC)
     )
     
     result = await repo.create_test(test)
@@ -35,7 +35,7 @@ async def test_get_test():
         type="coding",
         language="python",
         difficulty="medium",
-        create_date=datetime.utcnow()
+        create_date=datetime.now(UTC)
     ).save()
     
     # Then try to get it
