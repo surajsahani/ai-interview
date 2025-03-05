@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
-from api.model.test import CreateTestRequest, TestResponse
-from api.model.base import Response
+from api.model.api.test import CreateTestRequest, TestResponse
+from api.model.api.base import Response
 from api.service.test import TestService
 
 router = APIRouter()

@@ -1,4 +1,4 @@
-from api.model.test import CreateTestRequest, TestResponse
+from api.model.api.test import CreateTestRequest, TestResponse
 
 class TestService:
     async def create_test(self, request: CreateTestRequest) -> TestResponse:
