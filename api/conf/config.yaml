@@ -18,4 +18,12 @@ cors:
   allow_origins: ["*"]
   allow_credentials: true
   allow_methods: ["*"]
-  allow_headers: ["*"] 
+  allow_headers: ["*"]
+
+mongodb:
+  host: "localhost"
+  port: 27017
+  database: "ai_talent"
+  username: ""
+  password: ""
+  authentication_source: "admin" 

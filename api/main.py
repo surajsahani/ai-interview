@@ -6,12 +6,16 @@ from loguru import logger
 import uvicorn
 
 from api.conf.config import Config
+from api.infra.mongo.connection import init_mongodb
 from api.middleware.logging import LoggingMiddleware
 from api.middleware.error_handler import http_exception_handler, validation_exception_handler
 from api.router import health, test
 
 # Load configuration
 config = Config.load_config()
+
+# Initialize MongoDB
+init_mongodb()
 
 # Configure logging
 logger.add(

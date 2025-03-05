@@ -19,7 +19,7 @@ api/doc - swagger documents
 api/middleware - middleware like logging request/response
 api/router - API endpoint impelementation
 api/service - API business logic
-api/model - Request/Reponse model
+api/model - Request/Reponse model, Database model
 api/conf - API configuration files
 api/utils - API utilities
 api/logs - API log files
