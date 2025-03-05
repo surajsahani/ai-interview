@@ -18,23 +18,23 @@ class Question(BaseModel):
     answer: str = Field(description="The answer of the question")
 
 
-class AnalyzeAnswerResponse(BaseModel):
+# class AnalyzeAnswerResponse(BaseModel):
   
-    is_answer: bool = Field(description="Whether the answer is a valid answer to the previous question")
-    feedback: str = Field(description="The feedback of the answer to the previous question")
-    is_correct: bool = Field(description="Whether the answer is correct to the previous question")
-    answer_analysis: str = Field(description="The analysis of the answer to the previous question")
-    answer_score: int = Field(description="The score of the answer to the previous question (0-5)")
+#     is_answer: bool = Field(description="Whether the answer is a valid answer to the previous question")
+#     feedback: str = Field(description="The feedback of the answer to the previous question")
+#     is_correct: bool = Field(description="Whether the answer is correct to the previous question")
+#     answer_analysis: str = Field(description="The analysis of the answer to the previous question")
+#     answer_score: int = Field(description="The score of the answer to the previous question (0-5)")
 
-    is_interview_over: bool = Field(description="Whether the interview is over")
+#     is_interview_over: bool = Field(description="Whether the interview is over")
 
-    next_question: Question | None = Field(description="Generate a new question for the interview")
+#     next_question: Question | None = Field(description="Generate a new question for the interview")
 
 
 class Answer(BaseModel):
     is_valid: bool = Field(description="Whether the answer is a valid response")
     giveup: bool = Field(description="Whether the user wants to giveup or skip the question")
-    suggest_more_details: bool = Field(description="Anaswer is too short, suggest more details")
+    suggest_more_details: bool = Field(description="Answer is too short, suggest more details")
     follow_up_question: str = Field(description="Provide a friendly follow-up question to get more details of the answer")
     feedback: str = Field(description="Provide a friendly feedback to the user")
     is_correct: bool = Field(description="Whether the answer is correct")

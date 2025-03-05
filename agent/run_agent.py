@@ -15,8 +15,8 @@ def execute_ai_interview_agent(workflow, inputs: dict):
             "thread_id": uuid.uuid4(), 
             "user_id": "Interviewer"
         },
-        "model_name": "claude-3-5-sonnet",
-        # "model_name": "gpt-4o",
+        # "model_name": "claude-3-5-sonnet",
+        "model_name": "gpt-4o",
         # "model_name": "deepseek-v3",
     }
 
@@ -66,7 +66,7 @@ if __name__ == "__main__":
         "job_title": "React Web Developer",
         "knowledge_points": "React, JavaScript, TypeScript, React Router, React State Management, Redux, React Hooks, React Context API, React Performance Optimization",
         "interview_time": 3,
-        "language": "Chinese",
-        "difficulty": "Low" # Low, Medium, High
+        "language": "English",
+        "difficulty": "Low"
     }
     execute_ai_interview_agent(workflow, inputs)

@@ -17,9 +17,17 @@ from langchain_core.messages import HumanMessage
 from typing import List, Tuple
 import operator
 
+
 class Language(str, Enum):
     ENGLISH = "English"
     CHINESE = "Chinese"
+
+
+class Difficulty(str, Enum):
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+
 
 def add_or_remove_messages(left: list[BaseMessage], right: list[BaseMessage] | list[str]) -> List[BaseMessage]:
     """Add or remove messages from the list.
@@ -54,9 +62,9 @@ class AgentState(TypedDict):
     # interview requirement
     job_title: str
     knowledge_points: str
-    interview_time: int = 3
+    interview_time: int = 3   # Unit: minutes
     language: Language = Language.ENGLISH
-    difficulty: str = "Medium"
+    difficulty: Difficulty = Difficulty.MEDIUM
 
     # current user answer and feedback
     # feedback will be shown to user, it could be question or follow-up question
@@ -67,6 +75,7 @@ class AgentState(TypedDict):
 
     # final interview result
     interview_result: InterviewResult | None = None
+
 
 def get_qa_history(qa_history: List[Tuple[str, str, QAResult]]) -> str:
     if len(qa_history) == 0:

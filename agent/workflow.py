@@ -11,7 +11,7 @@ from agent.agent_state import AgentState
 from pydantic import BaseModel, Field   
 from utils.prompt_utils import load_prompt
 from utils.llm import get_model
-from agent.interview_response import Question, AnalyzeAnswerResponse, QAResult, Answer, QuestionType
+from agent.interview_response import Question, QAResult, Answer, QuestionType
 from langchain_openai import ChatOpenAI
 from langgraph.checkpoint.memory import MemorySaver
 from datetime import datetime   
