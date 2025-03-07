@@ -3,7 +3,6 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from langgraph.graph import StateGraph, END
-import json
 from langchain_core.messages import ToolMessage, SystemMessage, AIMessage, HumanMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_core.prompts import ChatPromptTemplate
@@ -134,10 +133,11 @@ def send_next_question(state: AgentState,
     
     prompt_content: str = load_prompt('prompts/kickoff_interview.txt')
     elapsed_time: int = int((datetime.now() - state["start_time"]).total_seconds() / 60)
+    remaining_time: int = (state["interview_time"] - elapsed_time) if elapsed_time < state["interview_time"] else 0
     human_prompt: HumanMessage = HumanMessage(content=prompt_content.format(job_title=state["job_title"], 
                                                               knowledge_points=state["knowledge_points"],
                                                               interview_time=state["interview_time"],
-                                                              remaining_time=state["interview_time"] - elapsed_time,
+                                                              remaining_time=remaining_time,
                                                               language=state["language"],
                                                               difficulty=state["difficulty"],
                                                               qa_history=get_qa_history(state["qa_history"])))
