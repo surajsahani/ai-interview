@@ -1,4 +1,5 @@
-from mongoengine import Document, StringField, ListField
+from mongoengine import Document, StringField, ListField, DateTimeField
+from datetime import datetime, UTC
 
 class Job(Document):
     """Job document model"""
@@ -18,11 +19,15 @@ class Job(Document):
     # Required soft skills for the job, e.g. ['Communication', 'Teamwork', 'Problem-solving']
     soft_skills = ListField(StringField(), required=True)
     
+    # Creation timestamp
+    create_date = DateTimeField(default=lambda: datetime.now(UTC))
+    
     meta = {
         'collection': 'ai_job',
         'indexes': [
             'job_id',
             'job_title',
-            'job_skills'
+            'technical_skills',
+            'soft_skills'
         ]
     } 
