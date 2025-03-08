@@ -2,6 +2,8 @@ from mongoengine import Document, StringField, ListField
 
 class Job(Document):
     """Job document model"""
+
+    # Job id, e.g. '1234567890'
     job_id = StringField(required=True, unique=True)
 
     # Job title, e.g. React Developer, Java Developer, etc.

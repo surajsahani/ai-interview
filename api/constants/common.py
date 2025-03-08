@@ -57,3 +57,15 @@ class TestStatus(str, Enum):
     @classmethod
     def choices(cls):
         return [member.value for member in cls] 
+
+class QuestionType(str, Enum):
+    """Types of questions available in the system"""
+    MULTIPLE_CHOICE = "multiple_choice"
+    SINGLE_CHOICE = "single_choice"
+    TRUE_FALSE = "true_false"
+    SHORT_ANSWER = "short_answer"
+    ESSAY = "essay"
+    
+    @classmethod
+    def choices(cls):
+        return [member.value for member in cls]

@@ -1,4 +1,4 @@
-from mongoengine import Document, StringField, DateTimeField, IntField
+from mongoengine import Document, StringField, DateTimeField, IntField, ListField
 from datetime import datetime, UTC, timedelta
 from api.constants.common import Language, TestType, Difficulty, TestStatus
 
@@ -23,6 +23,7 @@ class Test(Document):
     language = StringField(required=True, choices=Language.choices())
     difficulty = StringField(required=True, choices=Difficulty.choices())
     test_time = IntField(required=True, min_value=1, max_value=120)  # minutes
+    examination_points = ListField(StringField(), required=True)
     
     # Test status
     status = StringField(
@@ -34,7 +35,8 @@ class Test(Document):
     # Timestamps
     create_date = DateTimeField(default=lambda: datetime.now(UTC))
     start_date = DateTimeField(default=lambda: datetime.now(UTC))
-    close_date = DateTimeField(default=lambda: datetime.now(UTC) + timedelta(days=7))
+    expire_date = DateTimeField(default=lambda: datetime.now(UTC) + timedelta(days=7))
+    close_date = DateTimeField()
     
     meta = {
         'collection': 'ai_test',
