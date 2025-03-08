@@ -1,0 +1,297 @@
+openapi: 3.0.0
+info:
+  title: AI Interview Job API
+  description: AI Interview Platform Job API
+  version: 1.0.0
+  
+servers:
+  - url: /api/v1
+    description: API v1
+
+components:
+  schemas:
+    # 基础响应模型
+    BaseResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 响应代码
+        message:
+          type: string
+          description: 响应消息
+        data:
+          type: object
+          description: 响应数据
+      required:
+        - code
+        - message
+        - data
+    
+    # 职位相关模型
+    JobBase:
+      type: object
+      properties:
+        job_title:
+          type: string
+          description: 职位名称
+        job_description:
+          type: string
+          description: 职位描述
+        technical_skills:
+          type: array
+          items:
+            type: string
+          description: 技术技能要求
+        soft_skills:
+          type: array
+          items:
+            type: string
+          description: 软技能要求
+      required:
+        - job_title
+        - job_description
+    
+    CreateJobRequest:
+      allOf:
+        - $ref: '#/components/schemas/JobBase'
+    
+    UpdateJobRequest:
+      type: object
+      properties:
+        job_title:
+          type: string
+          description: 职位名称
+        job_description:
+          type: string
+          description: 职位描述
+        technical_skills:
+          type: array
+          items:
+            type: string
+          description: 技术技能要求
+        soft_skills:
+          type: array
+          items:
+            type: string
+          description: 软技能要求
+    
+    JobResponse:
+      allOf:
+        - $ref: '#/components/schemas/JobBase'
+        - type: object
+          properties:
+            job_id:
+              type: string
+              description: 职位ID
+            create_date:
+              type: string
+              format: date-time
+              description: 创建时间
+          required:
+            - job_id
+            - create_date
+
+paths:
+  /job:
+    post:
+      summary: 创建职位
+      description: 创建一个新的职位
+      tags:
+        - Job
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateJobRequest'
+      responses:
+        '200':
+          description: 成功创建职位
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/JobResponse'
+        '400':
+          description: 请求参数错误
+        '500':
+          description: 服务器内部错误
+    
+    get:
+      summary: 获取职位列表
+      description: 获取所有职位的列表
+      tags:
+        - Job
+      parameters:
+        - name: skip
+          in: query
+          description: 跳过的记录数
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: 返回的最大记录数
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: 成功获取职位列表
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/JobResponse'
+        '500':
+          description: 服务器内部错误
+  
+  /job/{job_id}:
+    get:
+      summary: 获取职位详情
+      description: 根据ID获取职位详情
+      tags:
+        - Job
+      parameters:
+        - name: job_id
+          in: path
+          description: 职位ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功获取职位详情
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/JobResponse'
+        '404':
+          description: 职位不存在
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "404"
+                      message:
+                        type: string
+                        example: "职位不存在"
+        '500':
+          description: 服务器内部错误
+    
+    put:
+      summary: 更新职位
+      description: 根据ID更新职位
+      tags:
+        - Job
+      parameters:
+        - name: job_id
+          in: path
+          description: 职位ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateJobRequest'
+      responses:
+        '200':
+          description: 成功更新职位
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/JobResponse'
+        '404':
+          description: 职位不存在
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "404"
+                      message:
+                        type: string
+                        example: "职位不存在"
+        '500':
+          description: 服务器内部错误
+    
+    delete:
+      summary: 删除职位
+      description: 根据ID删除职位
+      tags:
+        - Job
+      parameters:
+        - name: job_id
+          in: path
+          description: 职位ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功删除职位
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          deleted:
+                            type: boolean
+                            description: 是否成功删除
+        '404':
+          description: 职位不存在
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "404"
+                      message:
+                        type: string
+                        example: "职位不存在"
+        '500':
+          description: 服务器内部错误 

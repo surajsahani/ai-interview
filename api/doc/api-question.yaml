@@ -1,0 +1,358 @@
+openapi: 3.0.0
+info:
+  title: AI Interview Question API
+  description: AI Interview Platform Question API
+  version: 1.0.0
+  
+servers:
+  - url: /api/v1
+    description: API v1
+
+components:
+  schemas:
+    # 基础响应模型
+    BaseResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 响应代码
+        message:
+          type: string
+          description: 响应消息
+        data:
+          type: object
+          description: 响应数据
+      required:
+        - code
+        - message
+        - data
+    
+    # 问题相关模型
+    QuestionBase:
+      type: object
+      properties:
+        question:
+          type: string
+          description: 问题内容
+        answer:
+          type: string
+          description: 参考答案
+        examination_points:
+          type: array
+          items:
+            type: string
+          description: 考查要点
+        job_title:
+          type: string
+          description: 相关职位
+        language:
+          type: string
+          description: 语言
+          enum: [Chinese, English]
+        difficulty:
+          type: string
+          description: 难度
+          enum: [easy, medium, hard]
+        type:
+          type: string
+          description: 问题类型
+          enum: [multiple_choice, single_choice, true_false, short_answer, essay]
+      required:
+        - question
+        - answer
+        - difficulty
+        - type
+    
+    CreateQuestionRequest:
+      allOf:
+        - $ref: '#/components/schemas/QuestionBase'
+    
+    UpdateQuestionRequest:
+      type: object
+      properties:
+        question:
+          type: string
+          description: 问题内容
+        answer:
+          type: string
+          description: 参考答案
+        examination_points:
+          type: array
+          items:
+            type: string
+          description: 考查要点
+        job_title:
+          type: string
+          description: 相关职位
+        language:
+          type: string
+          description: 语言
+          enum: [Chinese, English]
+        difficulty:
+          type: string
+          description: 难度
+          enum: [easy, medium, hard]
+        type:
+          type: string
+          description: 问题类型
+          enum: [multiple_choice, single_choice, true_false, short_answer, essay]
+    
+    QuestionResponse:
+      allOf:
+        - $ref: '#/components/schemas/QuestionBase'
+        - type: object
+          properties:
+            question_id:
+              type: string
+              description: 问题ID
+          required:
+            - question_id
+
+paths:
+  /question:
+    post:
+      summary: 创建问题
+      description: 创建一个新的问题
+      tags:
+        - Question
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateQuestionRequest'
+      responses:
+        '200':
+          description: 成功创建问题
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/QuestionResponse'
+        '400':
+          description: 请求参数错误
+        '500':
+          description: 服务器内部错误
+    
+    get:
+      summary: 获取问题列表
+      description: 获取所有问题的列表
+      tags:
+        - Question
+      parameters:
+        - name: skip
+          in: query
+          description: 跳过的记录数
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: 返回的最大记录数
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: 成功获取问题列表
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/QuestionResponse'
+        '500':
+          description: 服务器内部错误
+  
+  /question/{question_id}:
+    get:
+      summary: 获取问题详情
+      description: 根据ID获取问题详情
+      tags:
+        - Question
+      parameters:
+        - name: question_id
+          in: path
+          description: 问题ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功获取问题详情
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/QuestionResponse'
+        '404':
+          description: 问题不存在
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "404"
+                      message:
+                        type: string
+                        example: "问题不存在"
+        '500':
+          description: 服务器内部错误
+    
+    put:
+      summary: 更新问题
+      description: 根据ID更新问题
+      tags:
+        - Question
+      parameters:
+        - name: question_id
+          in: path
+          description: 问题ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateQuestionRequest'
+      responses:
+        '200':
+          description: 成功更新问题
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/QuestionResponse'
+        '404':
+          description: 问题不存在
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "404"
+                      message:
+                        type: string
+                        example: "问题不存在"
+        '500':
+          description: 服务器内部错误
+    
+    delete:
+      summary: 删除问题
+      description: 根据ID删除问题
+      tags:
+        - Question
+      parameters:
+        - name: question_id
+          in: path
+          description: 问题ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功删除问题
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          deleted:
+                            type: boolean
+                            description: 是否成功删除
+        '404':
+          description: 问题不存在
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      code:
+                        type: string
+                        example: "404"
+                      message:
+                        type: string
+                        example: "问题不存在"
+        '500':
+          description: 服务器内部错误
+  
+  /question/search:
+    get:
+      summary: 搜索问题
+      description: 根据关键词搜索问题
+      tags:
+        - Question
+      parameters:
+        - name: keyword
+          in: query
+          description: 搜索关键词
+          required: true
+          schema:
+            type: string
+        - name: skip
+          in: query
+          description: 跳过的记录数
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: 返回的最大记录数
+          required: false
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: 成功搜索问题
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/QuestionResponse'
+        '500':
+          description: 服务器内部错误 

@@ -1,0 +1,456 @@
+openapi: 3.0.0
+info:
+  title: AI Interview API
+  description: AI Interview Platform API
+  version: 1.0.0
+  
+servers:
+  - url: /api/v1
+    description: API v1
+
+components:
+  schemas:
+    # 基础响应模型
+    BaseResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 响应代码
+        message:
+          type: string
+          description: 响应消息
+        data:
+          type: object
+          description: 响应数据
+      required:
+        - code
+        - message
+        - data
+    
+    # 测试相关模型
+    TestBase:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 测试类型
+          enum: [coding, interview, knowledge]
+        language:
+          type: string
+          description: 语言
+          enum: [Chinese, English]
+        difficulty:
+          type: string
+          description: 难度
+          enum: [easy, medium, hard]
+      required:
+        - type
+        - language
+        - difficulty
+    
+    CreateTestRequest:
+      allOf:
+        - $ref: '#/components/schemas/TestBase'
+        - type: object
+          properties:
+            job_id:
+              type: string
+              description: 关联的职位ID
+            user_id:
+              type: string
+              description: 关联的用户ID
+            examination_points:
+              type: array
+              items:
+                type: string
+              description: 考查要点列表
+            test_time:
+              type: integer
+              description: 测试时间（分钟）
+              minimum: 1
+              maximum: 120
+    
+    UpdateTestRequest:
+      type: object
+      properties:
+        type:
+          type: string
+          description: 测试类型
+          enum: [coding, interview, knowledge]
+        language:
+          type: string
+          description: 语言
+          enum: [Chinese, English]
+        difficulty:
+          type: string
+          description: 难度
+          enum: [easy, medium, hard]
+        status:
+          type: string
+          description: 测试状态
+          enum: [open, in_progress, completed, expired, cancelled]
+        job_id:
+          type: string
+          description: 关联的职位ID
+        user_id:
+          type: string
+          description: 关联的用户ID
+        examination_points:
+          type: array
+          items:
+            type: string
+          description: 考查要点列表
+        test_time:
+          type: integer
+          description: 测试时间（分钟）
+          minimum: 1
+          maximum: 120
+    
+    TestResponse:
+      allOf:
+        - $ref: '#/components/schemas/TestBase'
+        - type: object
+          properties:
+            test_id:
+              type: string
+              description: 测试ID
+            activate_code:
+              type: string
+              description: 测试激活码
+            status:
+              type: string
+              description: 测试状态
+              enum: [open, in_progress, completed, expired, cancelled]
+            job_id:
+              type: string
+              description: 关联的职位ID
+            job_title:
+              type: string
+              description: 关联的职位名称
+            user_id:
+              type: string
+              description: 关联的用户ID
+            user_name:
+              type: string
+              description: 关联的用户名称
+            question_ids:
+              type: array
+              items:
+                type: string
+              description: 测试包含的问题ID列表
+            examination_points:
+              type: array
+              items:
+                type: string
+              description: 考查要点列表
+            test_time:
+              type: integer
+              description: 测试时间（分钟）
+            create_date:
+              type: string
+              format: date-time
+              description: 创建时间
+            start_date:
+              type: string
+              format: date-time
+              description: 开始时间
+            expire_date:
+              type: string
+              format: date-time
+              description: 过期时间
+            update_date:
+              type: string
+              format: date-time
+              description: 更新时间
+          required:
+            - test_id
+            - activate_code
+            - status
+            - test_time
+            - create_date
+            - start_date
+            - expire_date
+
+paths:
+  /test:
+    post:
+      summary: 创建测试
+      description: 创建一个新的测试
+      tags:
+        - Test
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTestRequest'
+      responses:
+        '200':
+          description: 成功创建测试
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/TestResponse'
+        '400':
+          description: 请求参数错误
+        '500':
+          description: 服务器内部错误
+    
+    get:
+      summary: 获取测试列表
+      description: 获取所有测试的列表
+      tags:
+        - Test
+      parameters:
+        - name: skip
+          in: query
+          description: 跳过的记录数
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: 返回的最大记录数
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: 成功获取测试列表
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TestResponse'
+        '500':
+          description: 服务器内部错误
+  
+  /test/{test_id}:
+    get:
+      summary: 获取测试详情
+      description: 根据ID获取测试详情
+      tags:
+        - Test
+      parameters:
+        - name: test_id
+          in: path
+          description: 测试ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功获取测试详情
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/TestResponse'
+        '404':
+          description: 测试不存在
+        '500':
+          description: 服务器内部错误
+    
+    put:
+      summary: 更新测试
+      description: 根据ID更新测试
+      tags:
+        - Test
+      parameters:
+        - name: test_id
+          in: path
+          description: 测试ID
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateTestRequest'
+      responses:
+        '200':
+          description: 成功更新测试
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/TestResponse'
+        '404':
+          description: 测试不存在
+        '500':
+          description: 服务器内部错误
+    
+    delete:
+      summary: 删除测试
+      description: 根据ID删除测试
+      tags:
+        - Test
+      parameters:
+        - name: test_id
+          in: path
+          description: 测试ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功删除测试
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: object
+                        properties:
+                          deleted:
+                            type: boolean
+                            description: 是否成功删除
+        '404':
+          description: 测试不存在
+        '500':
+          description: 服务器内部错误
+  
+  /test/user/{user_id}:
+    get:
+      summary: 获取用户的测试列表
+      description: 根据用户ID获取测试列表
+      tags:
+        - Test
+      parameters:
+        - name: user_id
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: string
+        - name: skip
+          in: query
+          description: 跳过的记录数
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: 返回的最大记录数
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: 成功获取测试列表
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TestResponse'
+        '500':
+          description: 服务器内部错误
+  
+  /test/job/{job_id}:
+    get:
+      summary: 获取职位的测试列表
+      description: 根据职位ID获取测试列表
+      tags:
+        - Test
+      parameters:
+        - name: job_id
+          in: path
+          description: 职位ID
+          required: true
+          schema:
+            type: string
+        - name: skip
+          in: query
+          description: 跳过的记录数
+          required: false
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: 返回的最大记录数
+          required: false
+          schema:
+            type: integer
+            default: 100
+      responses:
+        '200':
+          description: 成功获取测试列表
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/TestResponse'
+        '500':
+          description: 服务器内部错误
+  
+  /test/activate/{activate_code}:
+    get:
+      summary: 根据激活码获取测试
+      description: 根据激活码获取测试详情
+      tags:
+        - Test
+      parameters:
+        - name: activate_code
+          in: path
+          description: 测试激活码
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功获取测试详情
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/BaseResponse'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/TestResponse'
+        '404':
+          description: 测试不存在
+        '500':
+          description: 服务器内部错误 
