@@ -1,10 +1,13 @@
 from mongoengine import Document, StringField, DateTimeField, IntField
-from datetime import datetime, UTC
+from datetime import datetime, UTC, timedelta
+from api.constants.common import Language, TestType, Difficulty, TestStatus
 
 class Test(Document):
     """Test document model"""
     # Test identification
     test_id = StringField(required=True, unique=True)
+
+    # 8 digits code
     activate_code = StringField(required=True, unique=True)
     
     # User information
@@ -14,25 +17,24 @@ class Test(Document):
     # Job information
     job_id = StringField(required=True)
     job_title = StringField(required=True)
-    job_description = StringField(required=True)
     
     # Test configuration
-    type = StringField(required=True, choices=['coding', 'system_design', 'behavior'])
-    language = StringField(required=True, choices=['python', 'java', 'javascript'])
-    difficulty = StringField(required=True, choices=['easy', 'medium', 'hard'])
-    test_time = IntField(required=True, min_value=15, max_value=120)  # minutes
+    type = StringField(required=True, choices=TestType.choices())
+    language = StringField(required=True, choices=Language.choices())
+    difficulty = StringField(required=True, choices=Difficulty.choices())
+    test_time = IntField(required=True, min_value=1, max_value=120)  # minutes
     
     # Test status
     status = StringField(
         required=True, 
-        choices=['open', 'on-going', 'completed'],
-        default='open'
+        choices=TestStatus.choices(),
+        default=TestStatus.OPEN.value
     )
     
     # Timestamps
     create_date = DateTimeField(default=lambda: datetime.now(UTC))
-    start_date = DateTimeField()
-    close_date = DateTimeField()
+    start_date = DateTimeField(default=lambda: datetime.now(UTC))
+    close_date = DateTimeField(default=lambda: datetime.now(UTC) + timedelta(days=7))
     
     meta = {
         'collection': 'ai_test',

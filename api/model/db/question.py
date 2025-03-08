@@ -1,4 +1,5 @@
 from mongoengine import Document, StringField, ListField
+from api.constants.common import Language
 
 class Question(Document):
     """Question document model"""
@@ -6,7 +7,7 @@ class Question(Document):
     answer = StringField(required=True)
     knowledge_points = ListField(StringField(), required=True)
     job_title = StringField(required=True)
-    language = StringField(required=True, choices=['python', 'java', 'javascript'])
+    language = StringField(required=True, choices=Language.choices())
     
     meta = {
         'collection': 'ai_question',

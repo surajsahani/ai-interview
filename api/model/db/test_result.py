@@ -9,7 +9,7 @@ class TestResult(Document):
     score = FloatField(required=True, min_value=0, max_value=100)
     question_number = IntField(required=True, min_value=0)
     correct_number = IntField(required=True, min_value=0)
-    elapse_time = IntField(required=True, min_value=0)  # in seconds
+    elapse_time = IntField(required=True, min_value=0)  # in minutes
     qa_history = ListField(DictField(), required=True)  # list of Q&A pairs
     
     meta = {
