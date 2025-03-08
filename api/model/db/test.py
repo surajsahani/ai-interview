@@ -26,6 +26,9 @@ class Test(Document):
     difficulty = StringField(required=True, choices=Difficulty.choices())
     test_time = IntField(required=True, min_value=1, max_value=120)  # minutes
     examination_points = ListField(StringField(), required=True)
+
+    # Test questions
+    question_ids = ListField(StringField(), required=True, default=[])
     
     # Test status
     status = StringField(
@@ -38,6 +41,7 @@ class Test(Document):
     create_date = DateTimeField(default=lambda: datetime.now(UTC))
     start_date = DateTimeField(default=lambda: datetime.now(UTC))
     expire_date = DateTimeField(default=lambda: datetime.now(UTC) + timedelta(days=7))
+    update_date = DateTimeField(default=lambda: datetime.now(UTC))
     close_date = DateTimeField()
     
     meta = {

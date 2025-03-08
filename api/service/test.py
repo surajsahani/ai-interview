@@ -78,12 +78,13 @@ class TestService:
         # 自动生成问题列表
         question_ids = []
         if not request.question_ids:
-            question_ids = await self._generate_questions(
-                job_title, 
-                request.language, 
-                request.difficulty, 
-                request.examination_points or []
-            )
+            pass
+            # question_ids = await self._generate_questions(
+            #     job_title, 
+            #     request.language, 
+            #     request.difficulty, 
+            #     request.examination_points or []
+            # )
         else:
             question_ids = request.question_ids
         
@@ -105,7 +106,7 @@ class TestService:
             create_date=datetime.now(UTC),
             start_date=datetime.now(UTC),
             expire_date=datetime.now(UTC) + timedelta(days=7),  # 默认7天后过期
-            update_date=None
+            update_date=datetime.now(UTC)
         )
         
         # 保存到数据库
