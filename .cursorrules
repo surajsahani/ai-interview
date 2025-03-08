@@ -25,7 +25,8 @@ api/utils - API utilities
 api/logs - API log files
 
 # 代码要求
-- 注重代码质量
+- 注重代码质量，Don't Repeat Yourself
+- 遵循面向对象原则和SOLID原则
 - 符合Python语言特性
 - 良好的注释
 - 良好的日志打印

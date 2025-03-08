@@ -289,11 +289,13 @@ curl -X GET "http://localhost:8000/api/v1/job/search/前端?skip=0&limit=10"
 curl -X POST http://localhost:8000/api/v1/test \
   -H "Content-Type: application/json" \
   -d '{
-    "test_id": "test001",
     "type": "coding",
     "language": "English",
     "difficulty": "medium",
-    "create_date": "2024-03-20T10:00:00"
+    "job_id": "job001",
+    "user_id": "user001",
+    "examination_points": ["React", "JavaScript", "前端性能优化"],
+    "test_time": 90
   }'
 
 # 预期响应:
@@ -301,9 +303,291 @@ curl -X POST http://localhost:8000/api/v1/test \
 #   "code": "0",
 #   "message": "success",
 #   "data": {
-#     "test_id": "test001",
-#     "status": "created"
+#     "test_id": "550e8400-e29b-41d4-a716-446655440000",
+#     "activate_code": "1234567890",
+#     "type": "coding",
+#     "language": "English",
+#     "difficulty": "medium",
+#     "status": "open",
+#     "job_id": "job001",
+#     "job_title": "前端开发工程师",
+#     "user_id": "user001",
+#     "user_name": "张三",
+#     "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
+#     "examination_points": ["React", "JavaScript", "前端性能优化"],
+#     "test_time": 90,
+#     "create_date": "2024-03-20T10:00:00.000Z",
+#     "start_date": "2024-03-20T10:00:00.000Z",
+#     "expire_date": "2024-03-27T10:00:00.000Z",
+#     "update_date": null
 #   }
+# }
+```
+
+### 获取测试详情
+
+```bash
+# 获取测试详情
+curl -X GET http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-446655440000
+
+# 预期响应:
+# {
+#   "code": "0",
+#   "message": "success",
+#   "data": {
+#     "test_id": "550e8400-e29b-41d4-a716-446655440000",
+#     "activate_code": "1234567890",
+#     "type": "coding",
+#     "language": "English",
+#     "difficulty": "medium",
+#     "status": "open",
+#     "job_id": "job001",
+#     "job_title": "前端开发工程师",
+#     "user_id": "user001",
+#     "user_name": "张三",
+#     "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
+#     "examination_points": ["React", "JavaScript", "前端性能优化"],
+#     "test_time": 90,
+#     "create_date": "2024-03-20T10:00:00.000Z",
+#     "start_date": "2024-03-20T10:00:00.000Z",
+#     "expire_date": "2024-03-27T10:00:00.000Z",
+#     "update_date": null
+#   }
+# }
+```
+
+### 获取测试列表
+
+```bash
+# 获取测试列表（分页）
+curl -X GET "http://localhost:8000/api/v1/test?skip=0&limit=10"
+
+# 预期响应:
+# {
+#   "code": "0",
+#   "message": "success",
+#   "data": [
+#     {
+#       "test_id": "550e8400-e29b-41d4-a716-446655440000",
+#       "activate_code": "1234567890",
+#       "type": "coding",
+#       "language": "English",
+#       "difficulty": "medium",
+#       "status": "open",
+#       "job_id": "job001",
+#       "job_title": "前端开发工程师",
+#       "user_id": "user001",
+#       "user_name": "张三",
+#       "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
+#       "examination_points": ["React", "JavaScript", "前端性能优化"],
+#       "test_time": 90,
+#       "create_date": "2024-03-20T10:00:00.000Z",
+#       "start_date": "2024-03-20T10:00:00.000Z",
+#       "expire_date": "2024-03-27T10:00:00.000Z",
+#       "update_date": null
+#     },
+#     // ... 更多测试
+#   ]
+# }
+```
+
+### 更新测试
+
+```bash
+# 更新测试
+curl -X PUT http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-446655440000 \
+  -H "Content-Type: application/json" \
+  -d '{
+    "type": "interview",
+    "language": "Chinese",
+    "difficulty": "hard",
+    "status": "in_progress",
+    "job_id": "job002",
+    "user_id": "user002",
+    "question_ids": ["q001", "q002", "q003", "q004"],
+    "examination_points": ["React", "JavaScript", "前端性能优化", "组件设计"],
+    "test_time": 120
+  }'
+
+# 预期响应:
+# {
+#   "code": "0",
+#   "message": "success",
+#   "data": {
+#     "test_id": "550e8400-e29b-41d4-a716-446655440000",
+#     "activate_code": "1234567890",
+#     "type": "interview",
+#     "language": "Chinese",
+#     "difficulty": "hard",
+#     "status": "in_progress",
+#     "job_id": "job002",
+#     "job_title": "后端开发工程师",
+#     "user_id": "user002",
+#     "user_name": "李四",
+#     "question_ids": ["q001", "q002", "q003", "q004"],
+#     "examination_points": ["React", "JavaScript", "前端性能优化", "组件设计"],
+#     "test_time": 120,
+#     "create_date": "2024-03-20T10:00:00.000Z",
+#     "start_date": "2024-03-20T10:00:00.000Z",
+#     "expire_date": "2024-03-27T10:00:00.000Z",
+#     "update_date": "2024-03-20T11:00:00.000Z"
+#   }
+# }
+```
+
+### 删除测试
+
+```bash
+# 删除测试
+curl -X DELETE http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-446655440000
+
+# 预期响应:
+# {
+#   "code": "0",
+#   "message": "success",
+#   "data": {
+#     "deleted": true
+#   }
+# }
+```
+
+### 根据用户ID获取测试
+
+```bash
+# 根据用户ID获取测试
+curl -X GET "http://localhost:8000/api/v1/test/user/user001?skip=0&limit=10"
+
+# 预期响应:
+# {
+#   "code": "0",
+#   "message": "success",
+#   "data": [
+#     {
+#       "test_id": "550e8400-e29b-41d4-a716-446655440000",
+#       "activate_code": "1234567890",
+#       "type": "coding",
+#       "language": "English",
+#       "difficulty": "medium",
+#       "status": "open",
+#       "job_id": "job001",
+#       "job_title": "前端开发工程师",
+#       "user_id": "user001",
+#       "user_name": "张三",
+#       "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
+#       "examination_points": ["React", "JavaScript", "前端性能优化"],
+#       "test_time": 90,
+#       "create_date": "2024-03-20T10:00:00.000Z",
+#       "start_date": "2024-03-20T10:00:00.000Z",
+#       "expire_date": "2024-03-27T10:00:00.000Z",
+#       "update_date": null
+#     },
+#     // ... 更多该用户的测试
+#   ]
+# }
+```
+
+### 根据职位ID获取测试
+
+```bash
+# 根据职位ID获取测试
+curl -X GET "http://localhost:8000/api/v1/test/job/job001?skip=0&limit=10"
+
+# 预期响应:
+# {
+#   "code": "0",
+#   "message": "success",
+#   "data": [
+#     {
+#       "test_id": "550e8400-e29b-41d4-a716-446655440000",
+#       "activate_code": "1234567890",
+#       "type": "coding",
+#       "language": "English",
+#       "difficulty": "medium",
+#       "status": "open",
+#       "job_id": "job001",
+#       "job_title": "前端开发工程师",
+#       "user_id": "user001",
+#       "user_name": "张三",
+#       "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
+#       "examination_points": ["React", "JavaScript", "前端性能优化"],
+#       "test_time": 90,
+#       "create_date": "2024-03-20T10:00:00.000Z",
+#       "start_date": "2024-03-20T10:00:00.000Z",
+#       "expire_date": "2024-03-27T10:00:00.000Z",
+#       "update_date": null
+#     },
+#     // ... 更多该职位的测试
+#   ]
+# }
+```
+
+### 根据状态获取测试
+
+```bash
+# 根据状态获取测试
+curl -X GET "http://localhost:8000/api/v1/test/status/open?skip=0&limit=10"
+
+# 预期响应:
+# {
+#   "code": "0",
+#   "message": "success",
+#   "data": [
+#     {
+#       "test_id": "550e8400-e29b-41d4-a716-446655440000",
+#       "activate_code": "1234567890",
+#       "type": "coding",
+#       "language": "English",
+#       "difficulty": "medium",
+#       "status": "open",
+#       "job_id": "job001",
+#       "job_title": "前端开发工程师",
+#       "user_id": "user001",
+#       "user_name": "张三",
+#       "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
+#       "examination_points": ["React", "JavaScript", "前端性能优化"],
+#       "test_time": 90,
+#       "create_date": "2024-03-20T10:00:00.000Z",
+#       "start_date": "2024-03-20T10:00:00.000Z",
+#       "expire_date": "2024-03-27T10:00:00.000Z",
+#       "update_date": null
+#     },
+#     // ... 更多开放状态的测试
+#   ]
+# }
+```
+
+### 根据类型获取测试
+
+```bash
+# 根据类型获取测试
+curl -X GET "http://localhost:8000/api/v1/test/type/coding?skip=0&limit=10"
+
+# 预期响应:
+# {
+#   "code": "0",
+#   "message": "success",
+#   "data": [
+#     {
+#       "test_id": "550e8400-e29b-41d4-a716-446655440000",
+#       "activate_code": "1234567890",
+#       "type": "coding",
+#       "language": "English",
+#       "difficulty": "medium",
+#       "status": "open",
+#       "job_id": "job001",
+#       "job_title": "前端开发工程师",
+#       "user_id": "user001",
+#       "user_name": "张三",
+#       "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
+#       "examination_points": ["React", "JavaScript", "前端性能优化"],
+#       "test_time": 90,
+#       "create_date": "2024-03-20T10:00:00.000Z",
+#       "start_date": "2024-03-20T10:00:00.000Z",
+#       "expire_date": "2024-03-27T10:00:00.000Z",
+#       "update_date": null
+#     },
+#     // ... 更多编程类型的测试
+#   ]
 # }
 ```
 

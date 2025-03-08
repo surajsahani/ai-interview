@@ -1,6 +1,8 @@
-from mongoengine import Document, StringField, DateTimeField, IntField, ListField
+from mongoengine import Document, StringField, DateTimeField, IntField, ListField, ReferenceField
 from datetime import datetime, UTC, timedelta
 from api.constants.common import Language, TestType, Difficulty, TestStatus
+from api.model.db.job import Job
+from api.model.db.user import User
 
 class Test(Document):
     """Test document model"""
