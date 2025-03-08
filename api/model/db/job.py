@@ -13,7 +13,10 @@ class Job(Document):
     job_description = StringField(required=True)
     
     # Required skills for the job, e.g. ['React', 'JavaScript', 'CSS']
-    job_skills = ListField(StringField(), required=True)
+    technical_skills = ListField(StringField(), required=True)
+
+    # Required soft skills for the job, e.g. ['Communication', 'Teamwork', 'Problem-solving']
+    soft_skills = ListField(StringField(), required=True)
     
     meta = {
         'collection': 'ai_job',
