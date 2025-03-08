@@ -14,7 +14,7 @@ from api.middleware.error_handler import (
     validation_exception_handler,
     generic_exception_handler
 )
-from api.router import health, test, user, job
+from api.router import health, test, user, job, question
 from api.exceptions.api_error import APIError
 
 # Load configuration
@@ -58,6 +58,7 @@ app.include_router(health.router, prefix=config.app.api_v1_str)
 app.include_router(test.router, prefix=config.app.api_v1_str)
 app.include_router(user.router, prefix=config.app.api_v1_str)
 app.include_router(job.router, prefix=config.app.api_v1_str)
+app.include_router(question.router, prefix=config.app.api_v1_str)
 
 # Run the API server
 # uvicorn api.main:app --reload

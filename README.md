@@ -221,152 +221,28 @@ curl http://localhost:8000/api/v1/health
 # {"status": "ok"}
 ```
 
-### User Management
+### API Testing
 
-#### Create User
+Run tests using pytest:
 ```bash
-# Create a new user
-curl -X POST http://localhost:8000/api/v1/user \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_name": "john_doe",
-    "password": "secure_password123",
-    "email": "john.doe@example.com",
-    "staff_id": "EMP001",
-    "role": 1
-  }'
+# install the package
+pip install -e .
 
-# Expected success response:
-# {
-#   "code": "0",
-#   "message": "success",
-#   "data": {
-#     "user_id": "550e8400-e29b-41d4-a716-446655440000",
-#     "user_name": "john_doe",
-#     "staff_id": "EMP001",
-#     "email": "john.doe@example.com",
-#     "status": 0,
-#     "role": 1,
-#     "create_date": "2024-03-20T10:00:00.000Z"
-#   }
-# }
-
-# Error response (duplicate email):
-# {
-#   "code": "409",
-#   "message": "Email already registered",
-#   "data": null
-# }
+# run pytest
+pytest tests/api -v
 ```
 
-#### Get User by ID
-```bash
-# Get user details by ID
-curl -X GET http://localhost:8000/api/v1/user/d772d20f-fce9-4340-9c6b-b34dabfc3fe6  
+## License
 
-# Expected success response:
-# {
-#   "code": "0",
-#   "message": "success",
-#   "data": {
-#     "user_id": "d772d20f-fce9-4340-9c6b-b34dabfc3fe6",
-#     "user_name": "john_doe",
-#     "staff_id": "EMP001",
-#     "email": "john.doe@example.com",
-#     "status": 0,
-#     "role": 1,
-#     "create_date": "2024-03-20T10:00:00.000Z"
-#   }
-# }
+This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details. 
 
-# Error response (not found):
-# {
-#   "code": "404",
-#   "message": "User not found",
-#   "data": null
-# }
-```
+## API 文档
 
-#### List Users
-```bash
-# Get list of users with pagination
-curl -X GET "http://localhost:8000/api/v1/user?skip=0&limit=10"
+API 文档可在 `/api/v1/doc` 路径下访问。
 
-# Expected success response:
-# {
-#   "code": "0",
-#   "message": "success",
-#   "data": [
-#     {
-#       "user_id": "550e8400-e29b-41d4-a716-446655440000",
-#       "user_name": "john_doe",
-#       "staff_id": "EMP001",
-#       "email": "john.doe@example.com",
-#       "status": 0,
-#       "role": 1,
-#       "create_date": "2024-03-20T10:00:00.000Z"
-#     },
-#     // ... more users
-#   ]
-# }
-```
+### API 测试
 
-#### Update User
-```bash
-# Update user details
-curl -X PUT http://localhost:8000/api/v1/user/d772d20f-fce9-4340-9c6b-b34dabfc3fe6 \
-  -H "Content-Type: application/json" \
-  -d '{
-    "user_name": "john_smith",
-    "email": "john.smith@example.com",
-    "status": 1
-  }'
-
-# Expected success response:
-# {
-#   "code": "0",
-#   "message": "success",
-#   "data": {
-#     "user_id": "550e8400-e29b-41d4-a716-446655440000",
-#     "user_name": "john_smith",
-#     "staff_id": "EMP001",
-#     "email": "john.smith@example.com",
-#     "status": 1,
-#     "role": 1,
-#     "create_date": "2024-03-20T10:00:00.000Z"
-#   }
-# }
-```
-
-#### Delete User
-```bash
-# Delete a user
-curl -X DELETE http://localhost:8000/api/v1/user/550e8400-e29b-41d4-a716-446655440000
-
-# Expected success response:
-# {
-#   "code": "0",
-#   "message": "success",
-#   "data": {
-#     "deleted": true
-#   }
-# }
-```
-
-Field descriptions:
-- `user_name`: Required. The name of the user
-- `password`: Required. User's password (will be hashed)
-- `email`: Required. Valid email address
-- `staff_id`: Optional. Employee ID or staff reference number
-- `role`: Optional. 0 for interviewer, 1 for interviewee (default: 1)
-- `status`: Auto-set. 0 for active, 1 for inactive
-
-Error codes:
-- `400`: Validation error
-- `404`: Resource not found
-- `409`: Duplicate resource (email or staff_id)
-- `422`: Invalid request format
-- `500`: Internal server error
+详细的 API 测试命令请参考 [curl-test.md](curl-test.md) 文件。
 
 ### Create Test
 
@@ -391,19 +267,4 @@ curl -X POST http://localhost:8000/api/v1/test \
 #     "status": "created"
 #   }
 # }
-```
-
-## API Testing
-
-Run tests using pytest:
-```bash
-# install the package
-pip install -e .
-
-# run pytest
-pytest tests/api -v
-```
-
-## License
-
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details. 
+``` 
