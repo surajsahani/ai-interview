@@ -2,7 +2,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from interview_response import QAResult
+from agent.interview_response import QAResult
 from utils.llm import get_model
 from langchain_core.messages import HumanMessage
 from utils.prompt_utils import load_prompt

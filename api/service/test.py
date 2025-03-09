@@ -20,8 +20,8 @@ class TestService:
         self.user_repository = UserRepository()
         self.question_repository = QuestionRepository()
     
-    def _generate_activate_code(self, length=10) -> str:
-        """生成指定长度的数字激活码"""
+    def _generate_activate_code(self, length=6) -> str:
+        """生成指定长度的数字激活码，默认为6位"""
         return ''.join(random.choices(string.digits, k=length))
     
     async def _is_activate_code_unique(self, code: str) -> bool:
@@ -29,8 +29,8 @@ class TestService:
         test = await self.repository.get_test_by_activate_code(code)
         return test is None
     
-    async def _generate_unique_activate_code(self, length=10) -> str:
-        """生成唯一的激活码"""
+    async def _generate_unique_activate_code(self, length=6) -> str:
+        """生成唯一的激活码，默认从6位开始"""
         max_attempts = 10  # 最大尝试次数
         for _ in range(max_attempts):
             code = self._generate_activate_code(length)

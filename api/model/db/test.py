@@ -14,21 +14,21 @@ class Test(Document):
     
     # User information
     user_id = StringField(required=True)
-    user_name = StringField(required=True)
+    user_name = StringField()
     
     # Job information
     job_id = StringField(required=True)
-    job_title = StringField(required=True)
+    job_title = StringField()
     
     # Test configuration
     type = StringField(required=True, choices=TestType.choices())
     language = StringField(required=True, choices=Language.choices())
     difficulty = StringField(required=True, choices=Difficulty.choices())
     test_time = IntField(required=True, min_value=1, max_value=120)  # minutes
-    examination_points = ListField(StringField(), required=True)
+    examination_points = ListField(StringField())
 
     # Test questions
-    question_ids = ListField(StringField(), required=True, default=[])
+    question_ids = ListField(StringField(), default=[])
     
     # Test status
     status = StringField(

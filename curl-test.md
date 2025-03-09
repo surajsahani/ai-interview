@@ -830,4 +830,36 @@ curl -X GET "http://localhost:8000/api/v1/question/type/short_answer?skip=0&limi
 #     // ... 更多简答题
 #   ]
 # }
-``` 
+```
+
+## 聊天 API
+
+### 开始聊天
+
+```bash
+curl -X POST http://localhost:8000/api/v1/chat/start \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "user_id": "user123",
+    "test_id": "test456",
+    "job_title": "React Web Developer",
+    "examination_points": "React, JavaScript, TypeScript, React Router, React State Management, Redux, React Hooks, React Context API, React Performance Optimization",
+    "test_time": 3,
+    "language": "English",
+    "difficulty": "easy"
+  }'
+```
+
+### 回答问题
+
+```bash
+curl -X POST http://localhost:8000/api/v1/chat/answer \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "user_id": "user123",
+    "test_id": "test456",
+    "question_id": "question789",
+    "user_answer": "React的虚拟DOM是一种内存中的数据结构，它代表了UI的理想状态。当应用状态改变时，React首先在虚拟DOM中进行更新，然后通过Diffing算法比较新旧虚拟DOM的差异，最后只将差异部分应用到实际DOM中，从而提高性能。"
+  }' 
