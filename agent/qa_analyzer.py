@@ -25,7 +25,6 @@ def analyze_question_answer(answer: str, question: str, language: str = "Chinese
     logger.info(f"Analysis Result: {response.model_dump_json(indent=2)}")
     return response
 
-
 if __name__ == "__main__":
     logger.info("Running QA Analyzer test cases")
     

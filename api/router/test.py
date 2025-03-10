@@ -4,6 +4,9 @@ from api.model.api.base import Response
 from api.model.api.test import CreateTestRequest, UpdateTestRequest, TestResponse
 from api.service.test import TestService
 from api.constants.common import TestType
+# from api.utils.log_decorator import log
+from api.exceptions.api_error import NotFoundError, DuplicateError, ValidationError
+from loguru import logger
 
 router = APIRouter(
     prefix="/test",
@@ -153,3 +156,31 @@ async def get_tests_by_type(
     service = TestService()
     tests = await service.get_tests_by_type(type, skip, limit)
     return Response[List[TestResponse]](data=tests) 
+
+@router.get("/activate_code/{code}", response_model=Response[TestResponse])
+async def get_test_by_activate_code(code: str):
+    """
+    根据激活码获取测试
+    
+    - **code**: 测试激活码
+    
+    只返回状态不是已完成的测试
+    """
+    try:
+        service = TestService()
+        test = await service.get_test_by_activate_code(code)
+        return Response[TestResponse](
+            code="0",
+            message="success",
+            data=test
+        )
+    except NotFoundError as e:
+        logger.warning(f"NotFoundError 获取测试失败: {str(e)}, 激活码: {code}")
+        return Response[TestResponse](
+            code="404",
+            message=str(e),
+            data=None
+        )
+    except Exception as e:
+        logger.error(f"Exception 获取测试失败: {e}, 激活码: {code}")
+        raise HTTPException(status_code=500, detail=str(e))

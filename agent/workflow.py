@@ -257,7 +257,8 @@ def build_graph():
 
     memory = MemorySaver()
     graph = workflow.compile(checkpointer=memory,
-                             interrupt_before=["analyze_answer"])
+                             interrupt_before=["analyze_answer"],
+                             interrupt_after=["summarize_interview"])
      
     return graph
 

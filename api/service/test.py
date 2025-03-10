@@ -12,7 +12,7 @@ from api.repositories.question_repository import QuestionRepository
 from api.utils.log_decorator import log
 from api.exceptions.api_error import NotFoundError, DuplicateError, ValidationError
 from api.constants.common import TestStatus, TestType, Language, Difficulty
-
+from loguru import logger
 class TestService:
     def __init__(self):
         self.repository = TestRepository()
@@ -20,8 +20,8 @@ class TestService:
         self.user_repository = UserRepository()
         self.question_repository = QuestionRepository()
     
-    def _generate_activate_code(self, length=6) -> str:
-        """生成指定长度的数字激活码，默认为6位"""
+    def _generate_activate_code(self, length=4) -> str:
+        """生成指定长度的数字激活码，默认为4位"""
         return ''.join(random.choices(string.digits, k=length))
     
     async def _is_activate_code_unique(self, code: str) -> bool:
@@ -29,8 +29,8 @@ class TestService:
         test = await self.repository.get_test_by_activate_code(code)
         return test is None
     
-    async def _generate_unique_activate_code(self, length=6) -> str:
-        """生成唯一的激活码，默认从6位开始"""
+    async def _generate_unique_activate_code(self, length=4) -> str:
+        """生成唯一的激活码，默认从4位开始"""
         max_attempts = 10  # 最大尝试次数
         for _ in range(max_attempts):
             code = self._generate_activate_code(length)
@@ -194,6 +194,36 @@ class TestService:
         """根据类型获取测试"""
         tests = await self.repository.get_tests_by_type(type, skip, limit)
         return [self._to_response(test) for test in tests]
+    
+    @log
+    async def get_test_by_activate_code(self, code: str) -> TestResponse:
+        """
+        根据激活码获取测试（仅返回未完成的测试）
+        
+        Args:
+            code: 测试激活码
+            
+        Returns:
+            TestResponse: 测试响应对象
+            
+        Raises:
+            NotFoundError: 如果测试不存在或已完成
+        """
+        # 使用激活码获取测试
+        test = await self.repository.get_test_by_activate_code(code)
+        logger.info(f"获取测试: {test.test_id} {test.status}")
+        
+        # 检查测试是否存在
+        if not test:
+            raise NotFoundError("测试不存在")
+        
+        # 检查测试状态是否已完成
+        if test.status == TestStatus.COMPLETED.value:
+            raise NotFoundError("测试已完成")
+        
+        test_response = self._to_response(test)
+        logger.info(f"测试响应: {test_response}")
+        return test_response
     
     def _to_response(self, test: Test) -> TestResponse:
         """将Test文档转换为TestResponse"""

@@ -834,7 +834,7 @@ curl -X GET "http://localhost:8000/api/v1/question/type/short_answer?skip=0&limi
 
 ## 聊天 API
 
-### 开始聊天
+### 开始聊天，首次开启面试时候调用
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/chat/start \
@@ -851,7 +851,7 @@ curl -X POST http://localhost:8000/api/v1/chat/start \
   }'
 ```
 
-### 回答问题
+### 提交用户回答的问题，同时返回面试官的新消息
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/chat/answer \
