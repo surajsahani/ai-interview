@@ -1,0 +1,163 @@
+openapi: 3.0.0
+info:
+  title: 面试聊天 API
+  description: 提供面试聊天相关的 API 接口
+  version: 1.0.0
+  
+tags:
+  - name: Chat
+    description: 面试聊天相关接口
+
+paths:
+  /chat/start:
+    post:
+      tags:
+        - Chat
+      summary: 开始聊天
+      description: 开始一个新的面试聊天会话，返回第一个问题
+      operationId: startChat
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StartChatRequest'
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponseWrapper'
+        '500':
+          description: 服务器错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+  /chat/answer:
+    post:
+      tags:
+        - Chat
+      summary: 回答问题
+      description: 提交用户对问题的回答，获取下一个问题或反馈
+      operationId: answerQuestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerRequest'
+      responses:
+        '200':
+          description: 成功响应
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChatResponseWrapper'
+        '500':
+          description: 服务器错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    StartChatRequest:
+      type: object
+      required:
+        - user_id
+        - test_id
+        - job_title
+      properties:
+        user_id:
+          type: string
+          description: 用户ID
+        test_id:
+          type: string
+          description: 测试ID
+        job_title:
+          type: string
+          description: 职位名称
+        examination_points:
+          type: array
+          items:
+            type: string
+          description: 考察点列表
+        test_time:
+          type: integer
+          description: 测试时间（分钟）
+        language:
+          type: string
+          description: 面试语言
+          default: "中文"
+        difficulty:
+          type: string
+          description: 难度级别
+          enum: ["简单", "中等", "困难"]
+          default: "中等"
+          
+    AnswerRequest:
+      type: object
+      required:
+        - user_id
+        - test_id
+        - question_id
+        - user_answer
+      properties:
+        user_id:
+          type: string
+          description: 用户ID
+        test_id:
+          type: string
+          description: 测试ID
+        question_id:
+          type: string
+          description: 问题ID
+        user_answer:
+          type: string
+          description: 用户回答内容
+          
+    ChatResponse:
+      type: object
+      properties:
+        chat_id:
+          type: string
+          description: 聊天会话ID
+        question_id:
+          type: string
+          description: 当前问题ID
+        question:
+          type: string
+          description: 问题内容
+        is_finished:
+          type: boolean
+          description: 面试是否结束
+        feedback:
+          type: string
+          description: 反馈内容（面试结束时提供）
+        score:
+          type: number
+          format: float
+          description: 得分（面试结束时提供）
+          
+    ChatResponseWrapper:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 响应代码，0表示成功
+        message:
+          type: string
+          description: 响应消息
+        data:
+          $ref: '#/components/schemas/ChatResponse'
+          
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: 错误详情 

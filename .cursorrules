@@ -15,18 +15,27 @@
 
 # API目录结构
 api - API root
-api/doc - swagger documents
-api/middleware - middleware like logging request/response
+api/doc - API swagger documents
+api/middleware - middleware e.g. logging request/response
 api/router - API endpoint impelementation
 api/service - API business logic
-api/model - Request/Reponse model, Database model
+api/model/api - API request/response model
+api/model/db - Database model
+api/repositories - API mongo db repository
 api/conf - API configuration files
 api/utils - API utilities
 api/logs - API log files
 
+# Unit Test 目录结构
+tests/api - API unit test
+tests/repositories - Repository unit test
+
 # 代码要求
-- 注重代码质量，Don't Repeat Yourself
-- 遵循面向对象原则和SOLID原则
-- 符合Python语言特性
+- 注重代码质量
+- 遵循DRY原则 - Don't Repeat Yourself
+- 遵循面向对象原则
+- 遵循SOLID原则
+- 遵循Python语言最佳实践
 - 良好的注释
+- 编写代码的时候，同时编写单元测试
 - 良好的日志打印
