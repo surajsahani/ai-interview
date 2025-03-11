@@ -261,7 +261,63 @@ def build_graph():
     return graph
 
 
+def generate_workflow_mermaid() -> str:
+    """
+    生成面试工作流的 mermaid 图表表示
+    
+    Returns:
+        str: mermaid 格式的流程图字符串
+    """
+    mermaid_diagram = """
+    graph TD
+        START[开始] --> A[kickoff_interview]
+        A --> B[analyze_answer]
+        
+        B -->|check_analyze_answer_response| C{条件判断}
+        C -->|需要重复问题| D[repeat_question]
+        C -->|继续下一问题| E[send_next_question]
+        C -->|面试结束| F[summarize_interview]
+        
+        D --> B
+        
+        E -->|is_over_condition| G{是否结束}
+        G -->|是| F
+        G -->|否| B
+        
+        F --> END[结束]
+        
+        style START fill:#f9f,stroke:#333,stroke-width:2px
+        style END fill:#f96,stroke:#333,stroke-width:2px
+        style C fill:#bbf,stroke:#333,stroke-width:2px
+        style G fill:#bbf,stroke:#333,stroke-width:2px
+    """
+    return mermaid_diagram.strip()
+
+def export_workflow_diagram(output_path: str = "docs/diagrams/workflow.md"):
+    """
+    导出工作流程图到文件
+    
+    Args:
+        output_path (str): 输出文件路径
+    """
+    import os
+    
+    # 创建输出目录
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    
+    # 写入文件
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write("```mermaid\n")
+        f.write(generate_workflow_mermaid())
+        f.write("\n```")
+        
+    print(f"工作流程图已导出到: {output_path}")
+
+
 if __name__ == "__main__":
     graph = build_graph()
     graph.get_graph().draw_mermaid_png(output_file_path="./graph.png")
+    
+    # Export workflow diagram
+    export_workflow_diagram()
 
