@@ -177,8 +177,7 @@ def summarize_interview(state: AgentState,
     logger.info(f"Interview Result : {response.model_dump_json(indent=2)}")
 
     return {
-        "interview_result": response,
-        "feedback": "Interview is over. Thank you for your participation."
+        "interview_result": response
     }
 
 
@@ -257,8 +256,7 @@ def build_graph():
 
     memory = MemorySaver()
     graph = workflow.compile(checkpointer=memory,
-                             interrupt_before=["analyze_answer"],
-                             interrupt_after=["summarize_interview"])
+                             interrupt_before=["analyze_answer"])
      
     return graph
 

@@ -121,12 +121,8 @@ class ChatService:
 
         # get the snapshot state (next question is in the snapshot)
         snapshot = self.workflow.get_state(config)
-        if snapshot.next:
-            feedback = snapshot.values["feedback"]
-        else:
-            feedback = None
+        feedback = snapshot.values["feedback"]
 
-        # 这里只返回一个模拟的响应
         return {
             "feedback": feedback,
             "question_id": str(uuid4()),  # TODO: 需要从snapshot中获取
