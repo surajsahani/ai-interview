@@ -16,21 +16,25 @@
 - notebook : Juypter Notebook 目录
 
 # API目录结构
-api - API root
-api/doc - API swagger documents
-api/middleware - middleware e.g. logging request/response
-api/router - API endpoint impelementation
-api/service - API business logic
-api/model/api - API request/response model
-api/model/db - Database model
-api/repositories - API mongo db repository
-api/conf - API configuration files
-api/utils - API utilities
-api/logs - API log files
+api - API 根目录
+api/doc - API swagger 文档，遵循OpenAPI标准
+api/middleware - middleware e.g. API日志的打印
+api/router - API endpoint 实现，需要同时在 main.py 中注册
+api/service - API 业务逻辑
+api/model/api - API request/response 模型
+api/model/db - Database 模型
+api/repositories - API mongo db repository，用于操作数据库
+api/conf - API 配置文件
 
 # Unit Test 目录结构
 tests/api - API unit test
 tests/repositories - Repository unit test
+tests/services - Service unit test
+tests/utils - Utils unit test
+
+# Unit Test 要求
+- 每个API接口，必须编写单元测试
+- 每个service/repository/utils，必须编写单元测试
 
 # 代码要求
 - 注重代码质量
@@ -41,3 +45,6 @@ tests/repositories - Repository unit test
 - 良好的注释
 - 编写代码的时候，同时编写单元测试
 - 良好的日志打印
+
+# 文档要求
+- 每个API接口，必须编写API文档，更新api/doc目录下的swagger文档、curl-test.md文档
