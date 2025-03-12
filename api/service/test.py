@@ -226,6 +226,38 @@ class TestService:
         logger.info(f"测试响应: {test_response}")
         return test_response
     
+    @log
+    async def update_test_status_to_completed(self, test_id: str) -> TestResponse:
+        """
+        更新测试状态为已完成
+        
+        Args:
+            test_id: 测试ID
+            
+        Returns:
+            TestResponse: 更新后的测试响应
+            
+        Raises:
+            NotFoundError: 如果测试不存在或更新失败
+        """
+        try:
+            # 使用原子更新操作更新状态
+            updated_test = await self.repository.update_test_status(
+                test_id=test_id,
+                status=TestStatus.COMPLETED,
+            )
+            
+            if not updated_test:
+                logger.warning(f"测试不存在: {test_id}")
+            else:            
+                logger.info(f"测试状态已更新为已完成: {test_id}")
+                
+            return self._to_response(updated_test)
+        
+        except Exception as e:
+            logger.error(f"更新测试状态失败: {str(e)}")
+            raise
+    
     def _to_response(self, test: Test) -> TestResponse:
         """将Test文档转换为TestResponse"""
         return TestResponse(

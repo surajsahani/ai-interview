@@ -9,6 +9,7 @@ from api.model.api.test_result import CreateTestResultRequest
 from api.service.test_result import TestResultService
 from agent.interview_response import InterviewResult
 from loguru import logger
+from api.service.test import TestService
 
 class ChatService:
     """聊天服务类"""
@@ -17,6 +18,7 @@ class ChatService:
         """初始化聊天服务"""
         self.workflow = build_graph()
         self.model_name = "claude-3-5-sonnet"
+        self.test_service = TestService()  # 添加 TestService 实例
     
     @log
     async def start_chat(
@@ -74,9 +76,7 @@ class ChatService:
         if snapshot.next:                    
             # show the question to user
             feedback = snapshot.values["feedback"]
-            # logger.info("AI :> " + feedback)
 
-        # 这里只返回一个模拟的响应
         return {
             "feedback": feedback,
             "question_id": str(uuid4()),  # TODO: 需要从snapshot中获取
@@ -113,7 +113,6 @@ class ChatService:
             # "model_name": "deepseek-v3",
         }
 
-
         # resume the interview workflow
         # pass user answer and get the result
         # then generate next question
@@ -132,21 +131,25 @@ class ChatService:
             interview_result: InterviewResult = snapshot.values["interview_result"]  
             logger.info(f"Interview is over, call test result service to update interview result {interview_result.model_dump_json(indent=2)}")
 
+            # 保存测试结果
             test_result_service = TestResultService()
-            request: CreateTestResultRequest = CreateTestResultRequest(
-                test_id = test_id,
-                user_id = user_id,
-                summary = interview_result.summary,
-                score = interview_result.score,
-                question_number = interview_result.total_question_number,
-                correct_number = interview_result.correct_question_number,
-                elapse_time = interview_result.interview_time,
-                qa_history = [{"question": q, "answer": a, "summary": s} for (q, a, s) in snapshot.values["qa_history"]]
+            request = CreateTestResultRequest(
+                test_id=test_id,
+                user_id=user_id,
+                summary=interview_result.summary,
+                score=interview_result.score,
+                question_number=interview_result.total_question_number,
+                correct_number=interview_result.correct_question_number,
+                elapse_time=interview_result.interview_time,
+                qa_history=[{"question": q, "answer": a, "summary": s} for (q, a, s) in snapshot.values["qa_history"]]
             )
             await test_result_service.complete_test_result(request)
+
+            # 更新测试状态为已完成
+            await self.test_service.update_test_status_to_completed(test_id)
 
         return {
             "feedback": feedback,
             "question_id": str(uuid4()),  # TODO: 需要从snapshot中获取
             "type": "question"
-        } 
+        }

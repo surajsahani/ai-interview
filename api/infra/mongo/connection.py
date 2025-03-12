@@ -12,6 +12,7 @@ def init_mongodb():
         
         # Connect to MongoDB
         connect(
+            alias="default",
             db=config.mongodb.database,
             host=config.mongodb.host,
             port=config.mongodb.port,

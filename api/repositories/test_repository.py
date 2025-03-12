@@ -1,9 +1,15 @@
 from typing import Optional, List
 from loguru import logger
-from api.model.db.test import Test
+from api.model.db.test import Test, TestStatus
 from api.utils.log_decorator import log
+from datetime import datetime, UTC  
+from mongoengine import Document, StringField, DateTimeField
 
 class TestRepository:
+    def __init__(self):
+        # 假设你使用的是 MongoEngine
+        self.collection = Test._get_collection()  # 获取底层的 MongoDB 集合
+
     @log
     async def create_test(self, test: Test) -> Test:
         """创建新测试"""
@@ -18,12 +24,7 @@ class TestRepository:
     async def get_tests(self, skip: int = 0, limit: int = 100) -> List[Test]:
         """获取测试列表（分页）"""
         return Test.objects().skip(skip).limit(limit).all()
-    
-    @log
-    async def update_test(self, test: Test) -> Test:
-        """更新测试"""
-        return test.save()
-    
+        
     @log
     async def delete_test(self, test_id: str) -> bool:
         """删除测试"""
@@ -53,4 +54,30 @@ class TestRepository:
     @log
     async def get_test_by_activate_code(self, activate_code: str) -> Optional[Test]:
         """根据激活码获取测试"""
-        return Test.objects(activate_code=activate_code).first() 
+        return Test.objects(activate_code=activate_code).first()
+    
+    @log
+    async def update_test_status(self, test_id: str, status: TestStatus) -> Optional[Test]:
+        """
+        更新测试状态
+        
+        Args:
+            test_id: 测试ID
+            status: 新状态
+            
+        Returns:
+            Optional[Test]: 更新后的测试文档，如果不存在则返回 None
+        """
+        try:
+            test = Test.objects(test_id=test_id).first()
+            if test:
+                test.status = status.value
+                test.update_date = datetime.now(UTC)
+                if status == TestStatus.COMPLETED:
+                    test.close_date = datetime.now(UTC)
+                test.save()
+                return test
+            return None
+        except Exception as e:
+            logger.error(f"更新测试状态失败: {e}")
+            raise 

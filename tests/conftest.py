@@ -45,4 +45,16 @@ async def setup_test_db():
 @pytest.fixture
 async def client():
     """Test client fixture"""
-    return TestClient(app) 
+    return TestClient(app)
+
+@pytest.fixture(scope="session", autouse=True)
+def mongo_connection():
+    # 连接到测试数据库
+    connect(
+        db="test_database_name",  # 替换为你的测试数据库名称
+        host="localhost",
+        port=27017
+    )
+    yield
+    # 断开连接
+    disconnect() 

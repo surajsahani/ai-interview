@@ -1,3 +1,13 @@
+from api.conf.config import Config
+from api.infra.mongo.connection import init_mongodb
+
+# Load configuration
+config = Config.load_config()
+
+# Initialize MongoDB
+init_mongodb()
+
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.exceptions import RequestValidationError
@@ -5,8 +15,6 @@ from starlette.exceptions import HTTPException
 from loguru import logger
 import uvicorn
 
-from api.conf.config import Config
-from api.infra.mongo.connection import init_mongodb
 from api.middleware.logging import LoggingMiddleware
 from api.middleware.error_handler import (
     api_error_handler,
@@ -17,11 +25,7 @@ from api.middleware.error_handler import (
 from api.router import health, test, user, job, question, chat, test_result
 from api.exceptions.api_error import APIError
 
-# Load configuration
-config = Config.load_config()
 
-# Initialize MongoDB
-init_mongodb()
 
 # Configure logging
 logger.add(
