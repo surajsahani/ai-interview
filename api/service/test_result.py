@@ -20,6 +20,56 @@ class TestResultService:
         self.user_repository = UserRepository()
     
     @log
+    async def complete_test_result(self, request: CreateTestResultRequest) -> TestResultResponse:
+        """
+        创建或更新测试结果
+        
+        Args:
+            request: 创建测试结果请求
+            
+        Returns:
+            TestResultResponse: 测试结果响应
+        """        
+        # 检查是否已存在该测试的结果
+        existing_result = await self.repository.get_result_by_test_id(request.test_id)        
+        if existing_result:
+            # 如果已存在结果，则更新它
+            logger.info(f"已存在测试结果，进行更新: {existing_result.test_id}")
+            
+            # 更新字段
+            existing_result.summary = request.summary
+            existing_result.score = request.score
+            existing_result.question_number = request.question_number
+            existing_result.correct_number = request.correct_number
+            existing_result.elapse_time = request.elapse_time
+            existing_result.qa_history = request.qa_history
+            
+            # 保存更新
+            updated_result = await self.repository.create_result(existing_result)
+            logger.info(f"更新测试结果完成: {existing_result.test_id}")
+            
+            return self._to_response(updated_result)
+        else:
+            # 如果不存在结果，则创建新的
+            test_result = TestResult(
+                test_id=request.test_id,
+                user_id=request.user_id,
+                summary=request.summary,
+                score=request.score,
+                question_number=request.question_number,
+                correct_number=request.correct_number,
+                elapse_time=request.elapse_time,
+                qa_history=request.qa_history
+            )
+            
+            # 保存到数据库
+            created_result = await self.repository.create_result(test_result)
+            logger.info(f"创建新的测试结果: {request.test_id}")
+            
+            return self._to_response(created_result)
+
+
+    @log
     async def create_test_result(self, request: CreateTestResultRequest) -> TestResultResponse:
         """
         创建或更新测试结果

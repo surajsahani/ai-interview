@@ -5,7 +5,10 @@ from api.utils.log_decorator import log
 from agent.workflow import build_graph
 from langgraph.types import Command
 from langgraph.types import StateSnapshot
-
+from api.model.api.test_result import CreateTestResultRequest
+from api.service.test_result import TestResultService
+from agent.interview_response import InterviewResult
+from loguru import logger
 
 class ChatService:
     """聊天服务类"""
@@ -100,7 +103,6 @@ class ChatService:
         Returns:
             Dict: 包含下一个问题或反馈的信息
         """
-        # TODO: 实现具体的业务逻辑
         config = {
             "configurable": {
                 "thread_id": test_id, 
@@ -122,6 +124,26 @@ class ChatService:
         # get the snapshot state (next question is in the snapshot)
         snapshot = self.workflow.get_state(config)
         feedback = snapshot.values["feedback"]
+
+        # check if the interview is over
+        if "interview_result" in snapshot.values.keys():
+            # call test result service to update interview result
+            # async call
+            interview_result: InterviewResult = snapshot.values["interview_result"]  
+            logger.info(f"Interview is over, call test result service to update interview result {interview_result.model_dump_json(indent=2)}")
+
+            test_result_service = TestResultService()
+            request: CreateTestResultRequest = CreateTestResultRequest(
+                test_id = test_id,
+                user_id = user_id,
+                summary = interview_result.summary,
+                score = interview_result.score,
+                question_number = interview_result.total_question_number,
+                correct_number = interview_result.correct_question_number,
+                elapse_time = interview_result.interview_time,
+                qa_history = [{"question": q, "answer": a, "summary": s} for (q, a, s) in snapshot.values["qa_history"]]
+            )
+            await test_result_service.complete_test_result(request)
 
         return {
             "feedback": feedback,
