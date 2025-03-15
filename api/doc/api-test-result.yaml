@@ -156,7 +156,7 @@ components:
           description: 测试耗时(分钟)
         qa_history:
           type: array
-          description: 问答历史记录
+          description: 问答历史记录，包括三个string字段：question, answer, summary
           items:
             type: object
     
@@ -222,6 +222,16 @@ components:
           description: 问答历史记录
           items:
             type: object
+            properties:
+              question:
+                type: string
+                description: 问题
+              answer:
+                type: string
+                description: 回答
+              summary:
+                type: string
+                description: 总结
         created_at:
           type: string
           format: date-time
