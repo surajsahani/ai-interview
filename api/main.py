@@ -1,5 +1,5 @@
 from api.conf.config import Config
-from api.infra.mongo.connection import init_mongodb
+from api.infra.mongo.connection import init_mongodb, MongoConnection
 
 # Load configuration
 config = Config.load_config()
@@ -65,6 +65,14 @@ app.include_router(job.router, prefix=config.app.api_v1_str)
 app.include_router(question.router, prefix=config.app.api_v1_str)
 app.include_router(chat.router, prefix=config.app.api_v1_str)
 app.include_router(test_result.router, prefix=config.app.api_v1_str)
+
+def shutdown_event():
+    MongoConnection.close_client()
+
+# 在 FastAPI 应用中注册 shutdown 事件
+@app.on_event("shutdown")
+def shutdown():
+    shutdown_event()
 
 # Run the API server
 # uvicorn api.main:app --reload

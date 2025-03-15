@@ -1,0 +1,247 @@
+openapi: 3.0.0
+info:
+  title: 测试结果 API
+  description: 用于创建和查询测试结果的API
+  version: 1.0.0
+tags:
+  - name: test_result
+    description: 测试结果相关操作
+
+paths:
+  /test_result:
+    post:
+      summary: 创建测试结果
+      description: 创建或更新一个测试结果
+      operationId: createTestResult
+      tags:
+        - test_result
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateTestResultRequest'
+      responses:
+        '200':
+          description: 成功创建测试结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestResultResponse'
+        '400':
+          description: 验证错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 未找到相关资源
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /test_result/test/{test_id}:
+    get:
+      summary: 根据测试ID获取测试结果
+      description: 通过测试ID查询单个测试结果
+      operationId: getTestResultByTestId
+      tags:
+        - test_result
+      parameters:
+        - name: test_id
+          in: path
+          description: 测试ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功查询测试结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TestResultResponse'
+        '404':
+          description: 未找到相关测试结果
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+                
+  /test_result/user/{user_id}:
+    get:
+      summary: 根据用户ID获取测试结果列表
+      description: 通过用户ID查询该用户的所有测试结果
+      operationId: getTestResultsByUserId
+      tags:
+        - test_result
+      parameters:
+        - name: user_id
+          in: path
+          description: 用户ID
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功查询用户测试结果
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    example: "0"
+                  message:
+                    type: string
+                    example: "success"
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TestResultResponse'
+        '500':
+          description: 服务器内部错误
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    CreateTestResultRequest:
+      type: object
+      required:
+        - test_id
+        - user_id
+      properties:
+        test_id:
+          type: string
+          description: 测试ID
+        user_id:
+          type: string
+          description: 用户ID
+        summary:
+          type: string
+          description: 测试总结
+        score:
+          type: integer
+          description: 测试分数(0-100)
+          minimum: 0
+          maximum: 100
+        question_number:
+          type: integer
+          description: 问题数量
+          minimum: 0
+        correct_number:
+          type: integer
+          description: 正确答案数量
+          minimum: 0
+        elapse_time:
+          type: number
+          format: float
+          description: 测试耗时(分钟)
+        qa_history:
+          type: array
+          description: 问答历史记录
+          items:
+            type: object
+    
+    UpdateTestResultRequest:
+      type: object
+      properties:
+        summary:
+          type: string
+          description: 测试总结
+        score:
+          type: integer
+          description: 测试分数(0-100)
+          minimum: 0
+          maximum: 100
+        question_number:
+          type: integer
+          description: 问题数量
+          minimum: 0
+        correct_number:
+          type: integer
+          description: 正确答案数量
+          minimum: 0
+        elapse_time:
+          type: number
+          format: float
+          description: 测试耗时(分钟)
+        qa_history:
+          type: array
+          description: 问答历史记录
+          items:
+            type: object
+    
+    TestResultResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 测试结果ID
+        test_id:
+          type: string
+          description: 测试ID
+        user_id:
+          type: string
+          description: 用户ID
+        summary:
+          type: string
+          description: 测试总结
+        score:
+          type: integer
+          description: 测试分数(0-100)
+        question_number:
+          type: integer
+          description: 问题数量
+        correct_number:
+          type: integer
+          description: 正确答案数量
+        elapse_time:
+          type: number
+          format: float
+          description: 测试耗时(分钟)
+        qa_history:
+          type: array
+          description: 问答历史记录
+          items:
+            type: object
+        created_at:
+          type: string
+          format: date-time
+          description: 创建时间
+        updated_at:
+          type: string
+          format: date-time
+          description: 更新时间
+          
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 错误代码
+          example: "404"
+        message:
+          type: string
+          description: 错误信息
+          example: "测试结果不存在"
+        data:
+          type: null
+          description: 数据（错误时为null） 
