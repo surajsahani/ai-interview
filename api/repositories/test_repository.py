@@ -76,7 +76,9 @@ class TestRepository:
                 if status == TestStatus.COMPLETED:
                     test.close_date = datetime.now(UTC)
                 test.save()
+                logger.info(f"更新测试状态成功: {test_id} -> {status}")
                 return test
+            logger.info(f"测试不存在: {test_id}")
             return None
         except Exception as e:
             logger.error(f"更新测试状态失败: {e}")

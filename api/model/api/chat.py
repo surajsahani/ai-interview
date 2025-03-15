@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from datetime import datetime
 from uuid import UUID
+
 
 class StartChatRequest(BaseModel):
     """开始聊天请求模型"""
@@ -22,6 +23,8 @@ class AnswerRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     """聊天响应模型"""
-    feedback: str = Field(..., description="反馈内容")
-    type: str = Field(..., description="反馈类型", examples=["question", "feedback", "summary"])
+    qa_history: Optional[List[Dict[str, Any]]] = Field(None, description="问答历史")
+    feedback: Optional[str] = Field(None, description="反馈内容")
+    type: Optional[str] = Field(None, description="反馈类型", examples=["question", "feedback", "summary"])
     question_id: Optional[str] = Field(None, description="问题ID") 
+    is_over: bool = Field(..., description="是否结束")

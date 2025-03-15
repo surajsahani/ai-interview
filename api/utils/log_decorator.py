@@ -1,5 +1,6 @@
 import functools
 import time
+import traceback
 from loguru import logger
 from typing import Any, Callable
 
@@ -42,10 +43,14 @@ def log(func: Callable) -> Callable:
             # Calculate execution time even for errors
             execution_time = time.time() - start_time
             
-            # Log error with time
+            # Capture the stack trace
+            stack_trace = traceback.format_exc()
+            
+            # Log error with stack trace and time
             logger.error(
                 f"Error in {class_name}.{func_name}\n"
                 f"Error: {str(e)}\n"
+                f"Stack trace: {stack_trace}\n"
                 f"Execution time: {execution_time:.3f}s"
             )
             raise

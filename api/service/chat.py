@@ -10,6 +10,8 @@ from api.service.test_result import TestResultService
 from agent.interview_response import InterviewResult
 from loguru import logger
 from api.service.test import TestService
+from langgraph.graph import START
+
 
 class ChatService:
     """聊天服务类"""
@@ -67,6 +69,85 @@ class ChatService:
             # "model_name": "deepseek-v3",
         }
 
+        # check if the test exists
+        current: StateSnapshot = self.workflow.get_state(config)
+        if current:
+            # workflow found
+            (next,) = current.next if current.next else (None,)
+            feedback = current.values["feedback"] if "feedback" in current.values.keys() else None
+            question_id = str(uuid4())
+            type = "question"
+            if next is None:
+                if "interview_result" in current.values.keys():
+                    logger.info(f"start chat, current next is None and interview_result exists")
+                    # workflow ends
+                    # load all messages from the test
+                    # return is_over = true
+                    if "qa_history" in current.values.keys():
+                        qa_history=[{"question": q, "answer": a, "summary": s} for (q, a, s) in current.values["qa_history"]]
+                    else:
+                        qa_history = []
+
+                    return {
+                        "feedback": feedback,
+                        "question_id": question_id,
+                        "type": type,
+                        "is_over": True,
+                        "qa_history": qa_history
+                    }
+                else:
+                    # normal start the workflow
+                    pass
+            elif next == "analyze_answer":
+                logger.info(f"start chat, current next is analyze_answer")
+                # load all messages from the test
+                # wait for user answer
+                # return is_over = false
+                if "qa_history" in current.values.keys():
+                    qa_history=[{"question": q, "answer": a, "summary": s} for (q, a, s) in current.values["qa_history"]]
+                else:
+                    qa_history = []
+
+                return {
+                    "feedback": feedback,
+                    "question_id": question_id,
+                    "type": type,
+                    "is_over": False,
+                    "qa_history": qa_history
+                }
+            elif next != START:
+                logger.info(f"start chat, current next is {next}")
+                # resume the workflow
+                # load all messages from the test
+                events = self.workflow.invoke(None, config=config)
+                for event in events:
+                    pass
+
+                # get the snapshot state (next question is in the snapshot)
+                snapshot = self.workflow.get_state(config)
+                if snapshot.next:                    
+                    # show the question to user
+                    # wait for user answer
+                    feedback = snapshot.values["feedback"]
+                    is_over = False
+                else:
+                    # workflow has no next, end
+                    is_over = True
+
+                if "qa_history" in current.values.keys():
+                    qa_history=[{"question": q, "answer": a, "summary": s} for (q, a, s) in current.values["qa_history"]]
+                else:
+                    qa_history = []
+
+                return {
+                    "feedback": feedback,
+                    "question_id": str(uuid4()),  # TODO: 需要从snapshot中获取
+                    "type": "question",
+                    "is_over": is_over,
+                    "qa_history": qa_history
+                }
+
+        # new workflow
         # start the interview, generate the first question
         events = self.workflow.stream(inputs, config=config, stream_mode="values")
         for event in events:
@@ -76,11 +157,15 @@ class ChatService:
         if snapshot.next:                    
             # show the question to user
             feedback = snapshot.values["feedback"]
+            is_over = False
+        else:
+            is_over = True
 
         return {
             "feedback": feedback,
             "question_id": str(uuid4()),  # TODO: 需要从snapshot中获取
-            "type": "question"
+            "type": "question",
+            "is_over": is_over
         }
     
     @log
@@ -148,8 +233,13 @@ class ChatService:
             # 更新测试状态为已完成
             await self.test_service.update_test_status_to_completed(test_id)
 
+            is_over = True
+        else:
+            is_over = False
+
         return {
             "feedback": feedback,
             "question_id": str(uuid4()),  # TODO: 需要从snapshot中获取
-            "type": "question"
+            "type": "question",
+            "is_over": is_over
         }
