@@ -1,13 +1,13 @@
-# API 测试命令
+# API test command
 
-本文档提供了使用 curl 测试 API 接口的命令示例。
+This document provides example commands for using the curl test API interface.
 
-## 用户管理 API
+## User Management API
 
-### 创建用户
+### create user
 
 ```bash
-# 创建新用户
+# Create new user
 curl -X POST http://localhost:8000/api/v1/user \
   -H "Content-Type: application/json" \
   -d '{
@@ -18,7 +18,7 @@ curl -X POST http://localhost:8000/api/v1/user \
     "role": 1
   }'
 
-# 预期成功响应:
+# Expected successful response::
 # {
 #   "code": "0",
 #   "message": "success",
@@ -33,7 +33,7 @@ curl -X POST http://localhost:8000/api/v1/user \
 #   }
 # }
 
-# 错误响应(邮箱已注册):
+# Error response (email already registered):
 # {
 #   "code": "409",
 #   "message": "Email already registered",
@@ -44,10 +44,10 @@ curl -X POST http://localhost:8000/api/v1/user \
 ### 获取用户详情
 
 ```bash
-# 获取用户详情
+# Get user details
 curl -X GET http://localhost:8000/api/v1/user/d772d20f-fce9-4340-9c6b-b34dabfc3fe6  
 
-# 预期成功响应:
+# Expected successful response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -62,7 +62,7 @@ curl -X GET http://localhost:8000/api/v1/user/d772d20f-fce9-4340-9c6b-b34dabfc3f
 #   }
 # }
 
-# 错误响应(未找到):
+# Error Response (Not Found):
 # {
 #   "code": "404",
 #   "message": "User not found",
@@ -70,13 +70,13 @@ curl -X GET http://localhost:8000/api/v1/user/d772d20f-fce9-4340-9c6b-b34dabfc3f
 # }
 ```
 
-### 获取用户列表
+### Get user list
 
 ```bash
-# 获取用户列表(分页)
+# Get user list (pagination)
 curl -X GET "http://localhost:8000/api/v1/user?skip=0&limit=10"
 
-# 预期成功响应:
+# Expected successful response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -98,7 +98,7 @@ curl -X GET "http://localhost:8000/api/v1/user?skip=0&limit=10"
 ### 更新用户
 
 ```bash
-# 更新用户信息
+# Update user
 curl -X PUT http://localhost:8000/api/v1/user/d772d20f-fce9-4340-9c6b-b34dabfc3fe6 \
   -H "Content-Type: application/json" \
   -d '{
@@ -107,7 +107,7 @@ curl -X PUT http://localhost:8000/api/v1/user/d772d20f-fce9-4340-9c6b-b34dabfc3f
     "status": 1
   }'
 
-# 预期成功响应:
+# Expected successful response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -123,13 +123,13 @@ curl -X PUT http://localhost:8000/api/v1/user/d772d20f-fce9-4340-9c6b-b34dabfc3f
 # }
 ```
 
-### 删除用户
+### Delete user
 
 ```bash
-# 删除用户
+# Delete user
 curl -X DELETE http://localhost:8000/api/v1/user/550e8400-e29b-41d4-a716-446655440000
 
-# 预期成功响应:
+# Expected successful response::
 # {
 #   "code": "0",
 #   "message": "success",
@@ -139,114 +139,114 @@ curl -X DELETE http://localhost:8000/api/v1/user/550e8400-e29b-41d4-a716-4466554
 # }
 ```
 
-## 职位管理 API
+## Job Management API
 
-### 创建职位
+### Create a job
 
 ```bash
-# 创建新职位
+# Create new position
 curl -X POST http://localhost:8000/api/v1/job \
   -H "Content-Type: application/json" \
   -d '{
-    "job_title": "前端开发工程师",
-    "job_description": "负责公司产品的前端开发工作，使用React技术栈实现用户界面和交互功能",
+    "job_title": "Front-end development engineer",
+    "job_description": "Responsible for the front-end development of the companys products, using the React technology stack to implement user interfaces and interactive functions",
     "technical_skills": ["React", "JavaScript", "TypeScript", "HTML", "CSS"],
-    "soft_skills": ["团队协作", "沟通能力", "解决问题能力"]
+    "soft_skills": ["Teamwork", "Communication skills", "Problem solving skills"]
   }'
 
-# 预期响应:
+# Expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": {
 #     "job_id": "550e8400-e29b-41d4-a716-446655440000",
-#     "job_title": "前端开发工程师",
-#     "job_description": "负责公司产品的前端开发工作，使用React技术栈实现用户界面和交互功能",
+#     "job_title": "Front-end development engineer",
+#     "job_description": "Responsible for the front-end development of the company's products, using the React technology stack to implement user interfaces and interactive functions",
 #     "technical_skills": ["React", "JavaScript", "TypeScript", "HTML", "CSS"],
-#     "soft_skills": ["团队协作", "沟通能力", "解决问题能力"],
+#     "soft_skills": ["Teamwork", "Communication skills", "Problem solving skills"],
 #     "create_date": "2024-03-20T10:00:00.000Z"
 #   }
 # }
 ```
 
-### 获取职位详情
+### Get job details
 
 ```bash
-# 获取职位详情
+# Get job details
 curl -X GET http://localhost:8000/api/v1/job/550e8400-e29b-41d4-a716-446655440000
 
-# 预期响应:
+# Expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": {
 #     "job_id": "550e8400-e29b-41d4-a716-446655440000",
-#     "job_title": "前端开发工程师",
-#     "job_description": "负责公司产品的前端开发工作，使用React技术栈实现用户界面和交互功能",
+#     "job_title": "Front-end development engineer",
+#     "job_description": "Responsible for the front-end development of the company's products, using the React technology stack to implement user interfaces and interactive functions",",
 #     "technical_skills": ["React", "JavaScript", "TypeScript", "HTML", "CSS"],
-#     "soft_skills": ["团队协作", "沟通能力", "解决问题能力"],
+#     "soft_skills": ["Teamwork", "Communication skills", "Problem solving skills"],
 #     "create_date": "2024-03-20T10:00:00.000Z"
 #   }
 # }
 ```
 
-### 获取职位列表
+### Get job listings
 
 ```bash
-# 获取职位列表（分页）
+# Get job list (paginated)
 curl -X GET "http://localhost:8000/api/v1/job?skip=0&limit=10"
 
-# 预期响应:
+# Expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": [
 #     {
 #       "job_id": "550e8400-e29b-41d4-a716-446655440000",
-#       "job_title": "前端开发工程师",
-#       "job_description": "负责公司产品的前端开发工作，使用React技术栈实现用户界面和交互功能",
+#       "job_title": "Front-end Development Engineer",
+#       "job_description": "Responsible for the front-end development of the company's products, using the React technology stack to implement user interfaces and interactive functions",,
 #       "technical_skills": ["React", "JavaScript", "TypeScript", "HTML", "CSS"],
-#       "soft_skills": ["团队协作", "沟通能力", "解决问题能力"],
+#       "soft_skills": ["Teamwork", "Communication skills", "Problem solving skills"],
 #       "create_date": "2024-03-20T10:00:00.000Z"
 #     },
-#     // ... 更多职位
+#     // ... More jobs
 #   ]
 # }
 ```
 
-### 更新职位
+### Update job
 
 ```bash
-# 更新职位信息
+# Update job information
 curl -X PUT http://localhost:8000/api/v1/job/550e8400-e29b-41d4-a716-446655440000 \
   -H "Content-Type: application/json" \
   -d '{
-    "job_title": "高级前端开发工程师",
+    "job_title": "Senior front-end development engineer",
     "technical_skills": ["React", "JavaScript", "TypeScript", "HTML", "CSS", "Redux", "Next.js"]
   }'
 
-# 预期响应:
+# Expected response::
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": {
 #     "job_id": "550e8400-e29b-41d4-a716-446655440000",
-#     "job_title": "高级前端开发工程师",
-#     "job_description": "负责公司产品的前端开发工作，使用React技术栈实现用户界面和交互功能",
+#     "job_title": "Senior front-end development engineer",
+#     "job_description": "Responsible for the front-end development of the company's products, using the React technology stack to implement user interfaces and interactive functions",
 #     "technical_skills": ["React", "JavaScript", "TypeScript", "HTML", "CSS", "Redux", "Next.js"],
-#     "soft_skills": ["团队协作", "沟通能力", "解决问题能力"],
+#     "soft_skills": ["Teamwork", "Communication skills", "Problem solving skills"],
 #     "create_date": "2024-03-20T10:00:00.000Z"
 #   }
 # }
 ```
 
-### 删除职位
+### Delete job
 
 ```bash
-# 删除职位
+# Delete job
 curl -X DELETE http://localhost:8000/api/v1/job/550e8400-e29b-41d4-a716-446655440000
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -256,36 +256,36 @@ curl -X DELETE http://localhost:8000/api/v1/job/550e8400-e29b-41d4-a716-44665544
 # }
 ```
 
-### 搜索职位
+### Search jobs
 
 ```bash
-# 搜索职位
+# Search jobs
 curl -X GET "http://localhost:8000/api/v1/job/search/前端?skip=0&limit=10"
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": [
 #     {
 #       "job_id": "550e8400-e29b-41d4-a716-446655440000",
-#       "job_title": "前端开发工程师",
-#       "job_description": "负责公司产品的前端开发工作，使用React技术栈实现用户界面和交互功能",
+#       "job_title": "Front-end development engineer",
+#       "job_description": "Responsible for the front-end development of the company's products, using the React technology stack to implement user interfaces and interactive functions",
 #       "technical_skills": ["React", "JavaScript", "TypeScript", "HTML", "CSS"],
-#       "soft_skills": ["团队协作", "沟通能力", "解决问题能力"],
+#       "soft_skills": ["Teamwork", "Communication skills", "Problem solving skills"],
 #       "create_date": "2024-03-20T10:00:00.000Z"
 #     },
-#     // ... 更多匹配的职位
+#     // ... More matching jobs
 #   ]
 # }
 ```
 
-## 测试管理 API
+## Test Management API
 
-### 创建测试
+### Create test
 
 ```bash
-# 创建测试
+# Create test
 curl -X POST http://localhost:8000/api/v1/test \
   -H "Content-Type: application/json" \
   -d '{
@@ -298,7 +298,7 @@ curl -X POST http://localhost:8000/api/v1/test \
     "test_time": 90
   }'
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -310,11 +310,11 @@ curl -X POST http://localhost:8000/api/v1/test \
 #     "difficulty": "medium",
 #     "status": "open",
 #     "job_id": "job001",
-#     "job_title": "前端开发工程师",
+#     "job_title": "Front-end development engineer",
 #     "user_id": "user001",
-#     "user_name": "张三",
+#     "user_name": "Zhang San",
 #     "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
-#     "examination_points": ["React", "JavaScript", "前端性能优化"],
+#     "examination_points": ["React", "JavaScript", "Front-end performance optimization"],
 #     "test_time": 90,
 #     "create_date": "2024-03-20T10:00:00.000Z",
 #     "start_date": "2024-03-20T10:00:00.000Z",
@@ -324,13 +324,13 @@ curl -X POST http://localhost:8000/api/v1/test \
 # }
 ```
 
-### 获取测试详情
+### Get test details
 
 ```bash
-# 获取测试详情
+# Get test details
 curl -X GET http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-446655440000
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -342,11 +342,11 @@ curl -X GET http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-4466554400
 #     "difficulty": "medium",
 #     "status": "open",
 #     "job_id": "job001",
-#     "job_title": "前端开发工程师",
+#     "job_title": "Front-end development engineer",
 #     "user_id": "user001",
-#     "user_name": "张三",
+#     "user_name": "Zhang San",
 #     "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
-#     "examination_points": ["React", "JavaScript", "前端性能优化"],
+#     "examination_points": ["React", "JavaScript", "Front-end performance optimization"],
 #     "test_time": 90,
 #     "create_date": "2024-03-20T10:00:00.000Z",
 #     "start_date": "2024-03-20T10:00:00.000Z",
@@ -356,13 +356,13 @@ curl -X GET http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-4466554400
 # }
 ```
 
-### 获取测试列表
+### Get test list
 
 ```bash
-# 获取测试列表（分页）
+# Get a list of tests (paginated)
 curl -X GET "http://localhost:8000/api/v1/test?skip=0&limit=10"
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -375,26 +375,26 @@ curl -X GET "http://localhost:8000/api/v1/test?skip=0&limit=10"
 #       "difficulty": "medium",
 #       "status": "open",
 #       "job_id": "job001",
-#       "job_title": "前端开发工程师",
+#       "job_title": "Front-end development engineer",
 #       "user_id": "user001",
-#       "user_name": "张三",
+#       "user_name": "Zhang San",
 #       "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
-#       "examination_points": ["React", "JavaScript", "前端性能优化"],
+#       "examination_points": ["React", "JavaScript", "Front-end performance optimization"],
 #       "test_time": 90,
 #       "create_date": "2024-03-20T10:00:00.000Z",
 #       "start_date": "2024-03-20T10:00:00.000Z",
 #       "expire_date": "2024-03-27T10:00:00.000Z",
 #       "update_date": null
 #     },
-#     // ... 更多测试
+#     // ... More tests
 #   ]
 # }
 ```
 
-### 更新测试
+### update test
 
 ```bash
-# 更新测试
+# update test
 curl -X PUT http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-446655440000 \
   -H "Content-Type: application/json" \
   -d '{
@@ -405,11 +405,11 @@ curl -X PUT http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-4466554400
     "job_id": "job002",
     "user_id": "user002",
     "question_ids": ["q001", "q002", "q003", "q004"],
-    "examination_points": ["React", "JavaScript", "前端性能优化", "组件设计"],
+    "examination_points": ["React", "JavaScript", "Front-end performance optimization", "Component design"],
     "test_time": 120
   }'
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -421,11 +421,11 @@ curl -X PUT http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-4466554400
 #     "difficulty": "hard",
 #     "status": "in_progress",
 #     "job_id": "job002",
-#     "job_title": "后端开发工程师",
+#     "job_title": "Backend development engineer",
 #     "user_id": "user002",
-#     "user_name": "李四",
+#     "user_name": "John Doe",
 #     "question_ids": ["q001", "q002", "q003", "q004"],
-#     "examination_points": ["React", "JavaScript", "前端性能优化", "组件设计"],
+#     "examination_points": ["React", "JavaScript", "Front-end performance optimization", "Component design"],
 #     "test_time": 120,
 #     "create_date": "2024-03-20T10:00:00.000Z",
 #     "start_date": "2024-03-20T10:00:00.000Z",
@@ -435,13 +435,13 @@ curl -X PUT http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-4466554400
 # }
 ```
 
-### 删除测试
+### Delete test
 
 ```bash
-# 删除测试
+# Delete test
 curl -X DELETE http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-446655440000
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -451,13 +451,13 @@ curl -X DELETE http://localhost:8000/api/v1/test/550e8400-e29b-41d4-a716-4466554
 # }
 ```
 
-### 根据用户ID获取测试
+### Get test by user ID
 
 ```bash
-# 根据用户ID获取测试
+# Get test by user ID
 curl -X GET "http://localhost:8000/api/v1/test/user/user001?skip=0&limit=10"
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -470,29 +470,29 @@ curl -X GET "http://localhost:8000/api/v1/test/user/user001?skip=0&limit=10"
 #       "difficulty": "medium",
 #       "status": "open",
 #       "job_id": "job001",
-#       "job_title": "前端开发工程师",
+#       "job_title": "Front-end development engineer",
 #       "user_id": "user001",
-#       "user_name": "张三",
+#       "user_name": "Zhang San",
 #       "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
-#       "examination_points": ["React", "JavaScript", "前端性能优化"],
+#       "examination_points": ["React", "JavaScript", ""Front-end performance optimization"],
 #       "test_time": 90,
 #       "create_date": "2024-03-20T10:00:00.000Z",
 #       "start_date": "2024-03-20T10:00:00.000Z",
 #       "expire_date": "2024-03-27T10:00:00.000Z",
 #       "update_date": null
 #     },
-#     // ... 更多该用户的测试
+#     // ... More tests by this user
 #   ]
 # }
 ```
 
-### 根据职位ID获取测试
+### Get test by job ID
 
 ```bash
-# 根据职位ID获取测试
+# Get test by job ID
 curl -X GET "http://localhost:8000/api/v1/test/job/job001?skip=0&limit=10"
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -509,25 +509,25 @@ curl -X GET "http://localhost:8000/api/v1/test/job/job001?skip=0&limit=10"
 #       "user_id": "user001",
 #       "user_name": "张三",
 #       "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
-#       "examination_points": ["React", "JavaScript", "前端性能优化"],
+#       "examination_points": ["React", "JavaScript", "Front-end performance optimization"],
 #       "test_time": 90,
 #       "create_date": "2024-03-20T10:00:00.000Z",
 #       "start_date": "2024-03-20T10:00:00.000Z",
 #       "expire_date": "2024-03-27T10:00:00.000Z",
 #       "update_date": null
 #     },
-#     // ... 更多该职位的测试
+#     // ... More tests for this position
 #   ]
 # }
 ```
 
-### 根据状态获取测试
+### Get tests based on status
 
 ```bash
-# 根据状态获取测试
+# Get tests based on status
 curl -X GET "http://localhost:8000/api/v1/test/status/open?skip=0&limit=10"
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -540,29 +540,29 @@ curl -X GET "http://localhost:8000/api/v1/test/status/open?skip=0&limit=10"
 #       "difficulty": "medium",
 #       "status": "open",
 #       "job_id": "job001",
-#       "job_title": "前端开发工程师",
+#       "job_title": "Front-end development engineer",
 #       "user_id": "user001",
-#       "user_name": "张三",
+#       "user_name": "Zhang San",
 #       "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
-#       "examination_points": ["React", "JavaScript", "前端性能优化"],
+#       "examination_points": ["React", "JavaScript", "Front-end performance optimization"],
 #       "test_time": 90,
 #       "create_date": "2024-03-20T10:00:00.000Z",
 #       "start_date": "2024-03-20T10:00:00.000Z",
 #       "expire_date": "2024-03-27T10:00:00.000Z",
 #       "update_date": null
 #     },
-#     // ... 更多开放状态的测试
+#     // ... More open tests
 #   ]
 # }
 ```
 
-### 根据类型获取测试
+### Get tests based on type
 
 ```bash
-# 根据类型获取测试
+# Get tests based on type
 curl -X GET "http://localhost:8000/api/v1/test/type/coding?skip=0&limit=10"
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -575,58 +575,58 @@ curl -X GET "http://localhost:8000/api/v1/test/type/coding?skip=0&limit=10"
 #       "difficulty": "medium",
 #       "status": "open",
 #       "job_id": "job001",
-#       "job_title": "前端开发工程师",
+#       "job_title": "Front-end development engineer",
 #       "user_id": "user001",
-#       "user_name": "张三",
+#       "user_name": "Zhang San",
 #       "question_ids": ["q001", "q002", "q003", "q004", "q005", "q006", "q007", "q008", "q009", "q010"],
-#       "examination_points": ["React", "JavaScript", "前端性能优化"],
+#       "examination_points": ["React", "JavaScript", "Front-end performance optimization"],
 #       "test_time": 90,
 #       "create_date": "2024-03-20T10:00:00.000Z",
 #       "start_date": "2024-03-20T10:00:00.000Z",
 #       "expire_date": "2024-03-27T10:00:00.000Z",
 #       "update_date": null
 #     },
-#     // ... 更多编程类型的测试
+#     // ... More Programmatic Testing
 #   ]
 # }
 ```
 
-## 错误代码说明
+## Error code description
 
-- `400`: 验证错误
-- `404`: 资源未找到
-- `409`: 资源冲突(如邮箱已注册)
-- `422`: 请求格式无效
-- `500`: 服务器内部错误 
+- `400`: Validation error
+- `404`: Resource not found
+- `409`: Resource conflict (e.g. the mailbox is already registered)
+- `422`: Invalid request format
+- `500`: Server internal error 
 
-## 问题管理 API
+## Issue Management API
 
-### 创建问题
+### create question
 
 ```bash
-# 创建新问题
+# Create new question
 curl -X POST http://localhost:8000/api/v1/question \
   -H "Content-Type: application/json" \
   -d '{
-    "question": "什么是React的虚拟DOM?",
-    "answer": "虚拟DOM是React的一个核心概念，它是真实DOM的一个轻量级副本。当组件状态发生变化时，React首先在虚拟DOM中进行更新，然后通过比较(diffing)算法找出真实DOM中需要更新的部分，最后只更新需要更新的部分，从而提高性能。",
-    "examination_points": ["React", "虚拟DOM", "性能优化"],
-    "job_title": "前端开发工程师",
+    "question": "What is React’s Virtual DOM?",
+    "answer": "Virtual DOM is a core concept of React. It is a lightweight copy of the real DOM. When the state of a component changes, React first updates it in the virtual DOM, then uses a diffing algorithm to find out which parts of the real DOM need to be updated, and finally updates only the parts that need to be updated, thereby improving performance.",
+    "examination_points": ["React", "Virtual DOM", "Performance Optimization"],
+    "job_title": "Front-end Development Engineer",
     "language": "Chinese",
     "difficulty": "medium",
     "type": "short_answer"
   }'
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": {
 #     "question_id": "550e8400-e29b-41d4-a716-446655440000",
-#     "question": "什么是React的虚拟DOM?",
-#     "answer": "虚拟DOM是React的一个核心概念，它是真实DOM的一个轻量级副本。当组件状态发生变化时，React首先在虚拟DOM中进行更新，然后通过比较(diffing)算法找出真实DOM中需要更新的部分，最后只更新需要更新的部分，从而提高性能。",
-#     "examination_points": ["React", "虚拟DOM", "性能优化"],
-#     "job_title": "前端开发工程师",
+#     "question": "What is React’s Virtual DOM?",
+#     "answer": "Virtual DOM is a core concept of React. It is a lightweight copy of the real DOM. When the state of a component changes, React first updates it in the virtual DOM, then uses a diffing algorithm to find out the parts of the real DOM that need to be updated, and finally only updates the parts that need to be updated, thereby improving performance. ",
+#     "examination_points": ["React", "Virtual DOM", "Performance Optimization"],
+#     "job_title": "Front-end development engineer",
 #     "language": "Chinese",
 #     "difficulty": "medium",
 #     "type": "short_answer"
@@ -637,19 +637,19 @@ curl -X POST http://localhost:8000/api/v1/question \
 ### 获取问题详情
 
 ```bash
-# 获取问题详情
+# Get problem details
 curl -X GET http://localhost:8000/api/v1/question/550e8400-e29b-41d4-a716-446655440000
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": {
 #     "question_id": "550e8400-e29b-41d4-a716-446655440000",
-#     "question": "什么是React的虚拟DOM?",
-#     "answer": "虚拟DOM是React的一个核心概念，它是真实DOM的一个轻量级副本。当组件状态发生变化时，React首先在虚拟DOM中进行更新，然后通过比较(diffing)算法找出真实DOM中需要更新的部分，最后只更新需要更新的部分，从而提高性能。",
-#     "examination_points": ["React", "虚拟DOM", "性能优化"],
-#     "job_title": "前端开发工程师",
+#     "question": "What is React’s Virtual DOM?",
+#     "answer": Virtual DOM is a core concept of React. It is a lightweight copy of the real DOM. When the state of a component changes, React first updates it in the virtual DOM, then uses a diffing algorithm to find out the parts of the real DOM that need to be updated, and finally only updates the parts that need to be updated, thereby improving performance. ",
+#     "examination_points": ["React", "虚拟DOM", "Performance optimization"],
+#     "job_title": "Front-end development engineer",
 #     "language": "Chinese",
 #     "difficulty": "medium",
 #     "type": "short_answer"
@@ -660,51 +660,51 @@ curl -X GET http://localhost:8000/api/v1/question/550e8400-e29b-41d4-a716-446655
 ### 获取问题列表
 
 ```bash
-# 获取问题列表（分页）
+# Get a list of questions (paginated)
 curl -X GET "http://localhost:8000/api/v1/question?skip=0&limit=10"
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": [
 #     {
 #       "question_id": "550e8400-e29b-41d4-a716-446655440000",
-#       "question": "什么是React的虚拟DOM?",
-#       "answer": "虚拟DOM是React的一个核心概念，它是真实DOM的一个轻量级副本。当组件状态发生变化时，React首先在虚拟DOM中进行更新，然后通过比较(diffing)算法找出真实DOM中需要更新的部分，最后只更新需要更新的部分，从而提高性能。",
-#       "examination_points": ["React", "虚拟DOM", "性能优化"],
-#       "job_title": "前端开发工程师",
+#       "question": "What is React’s Virtual DOM?",
+#       "answer": "Virtual DOM is a core concept of React. It is a lightweight copy of the real DOM. When the state of a component changes, React first updates it in the virtual DOM, then uses a diffing algorithm to find out the parts of the real DOM that need to be updated, and finally only updates the parts that need to be updated, thereby improving performance. ",
+#       "examination_points": ["React", "Virtual DOM", "Performance optimization"],
+#       "job_title": "Front-end development engineer",
 #       "language": "Chinese",
 #       "difficulty": "medium",
 #       "type": "short_answer"
 #     },
-#     // ... 更多问题
+#     // ... More questions
 #   ]
 # }
 ```
 
-### 更新问题
+### Update question
 
 ```bash
-# 更新问题
+# Update question
 curl -X PUT http://localhost:8000/api/v1/question/550e8400-e29b-41d4-a716-446655440000 \
   -H "Content-Type: application/json" \
   -d '{
-    "question": "详细解释React的虚拟DOM及其优势",
+    "question": "A detailed explanation of Reacts virtual DOM and its advantages",
     "difficulty": "hard",
-    "examination_points": ["React", "虚拟DOM", "性能优化", "渲染机制"]
+    "examination_points": ["React", "Virtual DOM", "Performance optimization", "rendering mechanism"]
   }'
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": {
 #     "question_id": "550e8400-e29b-41d4-a716-446655440000",
-#     "question": "详细解释React的虚拟DOM及其优势",
-#     "answer": "虚拟DOM是React的一个核心概念，它是真实DOM的一个轻量级副本。当组件状态发生变化时，React首先在虚拟DOM中进行更新，然后通过比较(diffing)算法找出真实DOM中需要更新的部分，最后只更新需要更新的部分，从而提高性能。",
-#     "examination_points": ["React", "虚拟DOM", "性能优化", "渲染机制"],
-#     "job_title": "前端开发工程师",
+#     "question": "A detailed explanation of React's virtual DOM and its advantages",
+#     "answer": "Virtual DOM is a core concept of React. It is a lightweight copy of the real DOM. When the state of a component changes, React first updates it in the virtual DOM, then uses a diffing algorithm to find out the parts of the real DOM that need to be updated, and finally only updates the parts that need to be updated, thereby improving performance. ",
+#     "examination_points": ["React", "Virtual DOM", "Performance optimization", "rendering mechanism"],
+#     "job_title": "Front-end Development Engineer",
 #     "language": "Chinese",
 #     "difficulty": "hard",
 #     "type": "short_answer"
@@ -712,13 +712,13 @@ curl -X PUT http://localhost:8000/api/v1/question/550e8400-e29b-41d4-a716-446655
 # }
 ```
 
-### 删除问题
+### delete question
 
 ```bash
-# 删除问题
+# delete question
 curl -X DELETE http://localhost:8000/api/v1/question/550e8400-e29b-41d4-a716-446655440000
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
@@ -728,113 +728,113 @@ curl -X DELETE http://localhost:8000/api/v1/question/550e8400-e29b-41d4-a716-446
 # }
 ```
 
-### 搜索问题
+### Search questions
 
 ```bash
-# 搜索问题
+# Search questions
 curl -X GET "http://localhost:8000/api/v1/question/search/React?skip=0&limit=10"
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": [
 #     {
 #       "question_id": "550e8400-e29b-41d4-a716-446655440000",
-#       "question": "什么是React的虚拟DOM?",
-#       "answer": "虚拟DOM是React的一个核心概念，它是真实DOM的一个轻量级副本。当组件状态发生变化时，React首先在虚拟DOM中进行更新，然后通过比较(diffing)算法找出真实DOM中需要更新的部分，最后只更新需要更新的部分，从而提高性能。",
-#       "examination_points": ["React", "虚拟DOM", "性能优化"],
-#       "job_title": "前端开发工程师",
+#       "question": "What is React’s Virtual DOM?",
+#       "answer": Virtual DOM is a core concept of React. It is a lightweight copy of the real DOM. When the state of a component changes, React first updates it in the virtual DOM, then uses a diffing algorithm to find out the parts of the real DOM that need to be updated, and finally only updates the parts that need to be updated, thereby improving performance. ",
+#       "examination_points": ["React", "Virtual DOM", "Performance Optimization"],
+#       "job_title": "Front-end development engineer",
 #       "language": "Chinese",
 #       "difficulty": "medium",
 #       "type": "short_answer"
 #     },
-#     // ... 更多匹配的问题
+#     // ... More matching questions
 #   ]
 # }
 ```
 
-### 根据岗位获取问题
+### Get questions based on position
 
 ```bash
-# 根据岗位获取问题
+# Get questions based on position
 curl -X GET "http://localhost:8000/api/v1/question/job/前端开发工程师?skip=0&limit=10"
 
-# 预期响应:
+# expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": [
 #     {
 #       "question_id": "550e8400-e29b-41d4-a716-446655440000",
-#       "question": "什么是React的虚拟DOM?",
-#       "answer": "虚拟DOM是React的一个核心概念，它是真实DOM的一个轻量级副本。当组件状态发生变化时，React首先在虚拟DOM中进行更新，然后通过比较(diffing)算法找出真实DOM中需要更新的部分，最后只更新需要更新的部分，从而提高性能。",
-#       "examination_points": ["React", "虚拟DOM", "性能优化"],
-#       "job_title": "前端开发工程师",
+#       "question": "What is React’s Virtual DOM?",
+#       "answer": "Virtual DOM is a core concept of React. It is a lightweight copy of the real DOM. When the state of a component changes, React first updates it in the virtual DOM, then uses a diffing algorithm to find out the parts of the real DOM that need to be updated, and finally only updates the parts that need to be updated, thereby improving performance.,"
+#       "examination_points": ["React", "Virtual DOM", "Performance Optimization"],
+#       "job_title": "Front-end development engineer",
 #       "language": "Chinese",
 #       "difficulty": "medium",
 #       "type": "short_answer"
 #     },
-#     // ... 更多该岗位的问题
+#     // ... More questions about this position
 #   ]
 # }
 ```
 
-### 根据难度获取问题
+### Get questions based on difficulty
 
 ```bash
-# 根据难度获取问题
+# Get questions based on difficulty
 curl -X GET "http://localhost:8000/api/v1/question/difficulty/medium?skip=0&limit=10"
 
-# 预期响应:
+# Expected response::
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": [
 #     {
 #       "question_id": "550e8400-e29b-41d4-a716-446655440000",
-#       "question": "什么是React的虚拟DOM?",
-#       "answer": "虚拟DOM是React的一个核心概念，它是真实DOM的一个轻量级副本。当组件状态发生变化时，React首先在虚拟DOM中进行更新，然后通过比较(diffing)算法找出真实DOM中需要更新的部分，最后只更新需要更新的部分，从而提高性能。",
-#       "examination_points": ["React", "虚拟DOM", "性能优化"],
-#       "job_title": "前端开发工程师",
+#       "question": "What is React's Virtual DOM?",,
+#       "answer": Virtual DOM is a core concept of React. It is a lightweight copy of the real DOM. When the state of a component changes, React first updates it in the virtual DOM, then uses a diffing algorithm to find out the parts of the real DOM that need to be updated, and finally only updates the parts that need to be updated, thereby improving performance. ",
+#       "examination_points": ["React", "Virtual DOM", "Performance Optimization"],
+#       "job_title": "Front-end development engineer",
 #       "language": "Chinese",
 #       "difficulty": "medium",
 #       "type": "short_answer"
 #     },
-#     // ... 更多中等难度的问题
+#     // ... More medium difficulty questions
 #   ]
 # }
 ```
 
-### 根据题目类型获取问题
+### Get questions by topic type
 
 ```bash
-# 根据题目类型获取问题
+# Get questions by topic type
 curl -X GET "http://localhost:8000/api/v1/question/type/short_answer?skip=0&limit=10"
 
-# 预期响应:
+# Expected response:
 # {
 #   "code": "0",
 #   "message": "success",
 #   "data": [
 #     {
 #       "question_id": "550e8400-e29b-41d4-a716-446655440000",
-#       "question": "什么是React的虚拟DOM?",
-#       "answer": "虚拟DOM是React的一个核心概念，它是真实DOM的一个轻量级副本。当组件状态发生变化时，React首先在虚拟DOM中进行更新，然后通过比较(diffing)算法找出真实DOM中需要更新的部分，最后只更新需要更新的部分，从而提高性能。",
-#       "examination_points": ["React", "虚拟DOM", "性能优化"],
-#       "job_title": "前端开发工程师",
+#       "question": "What is React's Virtual DOM?",
+#       "answer": "Virtual DOM is a core concept of React. It is a lightweight copy of the real DOM. When the state of a component changes, React first updates it in the virtual DOM, then uses a diffing algorithm to find out which parts of the real DOM need to be updated, and finally updates only the parts that need to be updated, thereby improving performance.",,
+#       "examination_points": ["React", "Virtual DOM", "Performance Optimization"],
+#       "job_title": "Front-end development engineer",
 #       "language": "Chinese",
 #       "difficulty": "medium",
 #       "type": "short_answer"
 #     },
-#     // ... 更多简答题
+#     // ... More short answer questions
 #   ]
 # }
 ```
 
-## 聊天 API
+## Chat API
 
-### 开始聊天，首次开启面试时候调用
+### Start chatting, called when the interview starts for the first time
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/chat/start \
@@ -851,7 +851,7 @@ curl -X POST http://localhost:8000/api/v1/chat/start \
   }'
 ```
 
-### 提交用户回答的问题，同时返回面试官的新消息
+### Submit the questions answered by the user and return new messages from the interviewer
 
 ```bash
 curl -X POST http://localhost:8000/api/v1/chat/answer \
@@ -861,5 +861,5 @@ curl -X POST http://localhost:8000/api/v1/chat/answer \
     "user_id": "user123",
     "test_id": "test456",
     "question_id": "question789",
-    "user_answer": "React的虚拟DOM是一种内存中的数据结构，它代表了UI的理想状态。当应用状态改变时，React首先在虚拟DOM中进行更新，然后通过Diffing算法比较新旧虚拟DOM的差异，最后只将差异部分应用到实际DOM中，从而提高性能。"
+    "user_answer": "React's virtual DOM is an in-memory data structure that represents the ideal state of the UI. When the application state changes, React first updates it in the virtual DOM, then compares the differences between the new and old virtual DOMs through the diffing algorithm, and finally applies only the differences to the actual DOM, thereby improving performance."
   }' 
